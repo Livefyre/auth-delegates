@@ -1,6 +1,6 @@
 {
   "name": "auth-delegate-livefyre",
-  "description": "Authentication delegate for livefyre.com profiles for use on livefyre projects",
+  "description": "Authentication delegates for Livefyre projects",
   "author": "Livefyre <support@livefyre.com>",
   "contributors": {
     "name": "Ross Pfahler",
