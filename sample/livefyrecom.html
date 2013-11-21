@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Livefyre.com Auth Sample</title>
+        <script src="../lib/cajon/cajon.js"></script>
+        <script src="../requirejs.conf.js"></script>
+        <script>
+            require([
+                'auth-delegates/delegates/livefyre',
+                'auth-delegates/user'
+            ], function(Delegate, user) {
+                var loginEl = document.getElementById('login'),
+                    logoutEl = document.getElementById('logout');
+                logoutEl.style.display = 'none';
+
+                // New User!
+                user.on('change', function(attributes) {
+                    console.log('User changed!!!!');
+                    debugger;
+                });
+
+
+                // Livefyre.com delegate
+                var d = new Delegate('2485933', 'http://www.fyre');
+                loginEl.onclick = function() {
+                    d.login(function(err, data) {
+                        if (err) {
+                            console.error('blah login failzorz');
+                            return;
+                        }
+                        login.style.display = 'none';
+                        logout.style.display = 'inline';
+                    });
+                };
+
+                logoutEl.onclick = function() {
+                    d.logout(function(err, data) {
+                        if (err) {
+                            return;
+                        }
+                        login.style.display = 'inline';
+                        logout.style.display = 'none';
+                        console.log('logout complete!');
+                    });
+                };
+
+
+                d.loadSession(function(err, data) {
+                    if (err) {
+                        console.info('cannot login by cookie, but nice try anyways');
+                        return;
+                    }
+                    login.style.display = 'none';
+                    logout.style.display = 'inline';
+                });
+            });
+        </script>
+    <body>
+        <h1>Livefyre.com Auth Sample</h1>
+        <a href="#" id="login">Login</a>
+        <span id="userinfo"></span>
+        <a href="#" id="logout">Logout</a>
+    </body>
+</html>

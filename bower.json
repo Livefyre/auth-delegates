@@ -1,0 +1,10 @@
+{
+  "name": "auth-delegate-livefyre",
+  "version": "1.0.0",
+  "dependencies": {
+    "cajon": "git@github.com:requirejs/cajon.git#~0.1.11",
+    "event-emitter": "git://github.com/Livefyre/event-emitter.git",
+    "inherits": "git://github.com/Livefyre/inherits.git"
+  },
+  "devDependencies": {}
+}

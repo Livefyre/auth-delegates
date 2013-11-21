@@ -1,0 +1,23 @@
+{
+  "name": "auth-delegate-livefyre",
+  "description": "Authentication delegate for livefyre.com profiles for use on livefyre projects",
+  "author": "Livefyre <support@livefyre.com>",
+  "contributors": {
+    "name": "Ross Pfahler",
+    "email": "ross@livefyre.com"
+  },
+  "version": "1.0.0",
+  "devDependencies": {
+    "bower": "*",
+    "chai": "1.8.1",
+    "http-server": "*",
+    "mocha": "1.14.0",
+    "mocha-phantomjs": "3.1.6",
+    "phantomjs": "*"
+  },
+  "scripts": {
+    "postinstall": "./node_modules/bower/bin/bower install",
+    "start": "./node_modules/http-server/bin/http-server .",
+    "test": "./bin/test"
+  }
+}
