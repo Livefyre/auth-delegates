@@ -1,6 +1,6 @@
 var jsonp = require('auth-delegates/util/jsonp'),
     storage = require('auth-delegates/util/storage'),
-    lfUser = require('auth-delegates/user'),
+    user = require('auth-delegates/user'),
     userAgent = navigator.userAgent,
     IS_OPERA = userAgent.indexOf('Opera') > -1,
     AUTH_COOKIE_KEY = 'fyre-auth';
@@ -16,36 +16,28 @@ function LivefyreDelegate(collectionId, serverUrl) {
 }
 
 /**
- * @param {function()} callback
+ * Login
  */
-LivefyreDelegate.prototype.login = function(callback) {
-    function success(response) {
-        var data = response['data'],
-            args = 'profile' in data ? [null, data] : ['`profile` not in data'];
-        callback.apply(null, args);
-        lfUser.fromProfile(data);
-    }
-
-    this._popup(function(err, data) {
-        if (err) {
-            callback(err);
+LivefyreDelegate.prototype.login = function() {
+    this._popup(function(err, resp) {
+        if (err || resp['status'] === 'error') {
             return;
         }
-        success(data);
+        user.login(resp['data']);
     });
 };
 
 /**
  * mmmmcookies
- * @param {function()} callback
  */
-LivefyreDelegate.prototype.loadSession = function(callback) {
-    var authData = storage.get(AUTH_COOKIE_KEY);
-    if (authData) {
-        callback(null, authData);
-        return;
+LivefyreDelegate.prototype.loadSession = function() {
+    var cookieData = storage.get(AUTH_COOKIE_KEY) || {};
+    if (cookieData['token'] === token) {
+        user.login(cookieData);
+    } else {
+        storage.remove(AUTH_COOKIE_KEY);
+        user.set('token', token);
     }
-    callback('No storage data found');
 };
 
 /**
@@ -97,11 +89,12 @@ LivefyreDelegate.prototype._popup = function(callback) {
 /**
  * @param {function()} callback
  */
-LivefyreDelegate.prototype.logout = function(callback) {
+LivefyreDelegate.prototype.logout = function() {
     var url = this._serverUrl + '/auth/logout/ajax/?nocache=' + (new Date()).getTime();
     jsonp.req(url, function(err, data) {
-        callback.apply(null, arguments);
-        lfUser.clear();
+        if (!err) {
+            user.logout();
+        }
     });
 };
 

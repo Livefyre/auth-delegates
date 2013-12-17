@@ -7,7 +7,9 @@
  */
 
 var EventEmitter = require('event-emitter'),
-    inherits = require('inherits');
+    inherits = require('inherits'),
+    storage = require('auth-delegates/util/storage'),
+    AUTH_COOKIE_KEY = 'fyre-auth';
 
 /**
  * Simple extends function. Operates in place
@@ -29,22 +31,25 @@ function extend(target, var_args) {
  * @constructor
  */
 function LivefyreUser(initialAttr) {
-    this._attributes = LivefyreUser.DEFAULTS;
+    this._attributes = LivefyreUser.getDefaults();
     extend(this._attributes, initialAttr || {});
     EventEmitter.call(this);
 }
 inherits(LivefyreUser, EventEmitter);
 
-/** @type {Object.<string, *>} */
-LivefyreUser.DEFAULTS = {
-    'mod': false,
-    'keys': []
+/** @return {Object.<string, *>} */
+LivefyreUser.getDefaults = function() {
+    return {
+        'mod': false,
+        'keys': []
+    };
 };
 
 /** @enum {string} */
 LivefyreUser.EVENTS = {
     CHANGE: 'change',
-    CLEAR: 'clear'
+    LOGOUT: 'logout',
+    LOGIN: 'login'
 };
 
 /**
@@ -76,32 +81,58 @@ LivefyreUser.prototype.get = function(key) {
     return this._attributes[key];
 };
 
+/**
+ * @param {string} key
+ */
+LivefyreUser.prototype.unset = function(key) {
+    if (key in this._attributes) {
+        delete this._attributes[key];
+        var obj = {};
+        obj[key] = void 0;
+        this.emit(LivefyreUser.EVENTS.CHANGE, obj);
+    }
+};
+
 /** 
  * Clear all attributes back to defaults.
  */
-LivefyreUser.prototype.clear = function() {
-    this._attributes = LivefyreUser.DEFAULTS;
-    this.emit(LivefyreUser.EVENTS.CLEAR);
+LivefyreUser.prototype.logout = LivefyreUser.prototype.reset = function() {
+    this._attributes = LivefyreUser.getDefaults();
+    storage.remove(AUTH_COOKIE_KEY);
+    this.emit(LivefyreUser.EVENTS.LOGOUT);
 };
 
 /**
- * From a auth response, set up the profile object.
- * @param {Object} profileObject
+ * From a auth response, set up the profile object (or a token). The following things happen:
+ *  - Parse data
+ *  - Save token and profile in storage
+ *  - Trigger login event
+ * @param {Object|string) profileOrToken
  */
-LivefyreUser.prototype.fromProfile = function(profileObject) {
-    var profile = profileObject['profile'],
-        permissions = profileObject['permissions'],
-        i,  
-        authors = permissions['authors'],
-        modKey = permissions['moderator_key'];
-    profile['token'] = profileObject['token']['value'];
-    profile['mod'] = !!modKey;
-    profile['keys'] = [modKey];
+LivefyreUser.prototype.login = function(profileOrToken) {
+    if (typeof profileOrToken !== 'string') {
+        var profile = profileOrToken['profile'],
+            permissions = profileOrToken['permissions'],
+            authors = permissions['authors'],
+            modKey = permissions['moderator_key'],
+            tokenObj = profileOrToken['token'],
+            ttl = (+new Date()) + tokenObj['ttl'];
 
-    for (i = 0; i < authors.length; i++) {
-        profile['keys'].push(authors[i]['key']);
+        profile['token'] = tokenObj['value'];
+        profile['mod'] = !!modKey;
+        profile['keys'] = [modKey];
+
+        for (var i = 0; i < authors.length; i++) {
+            profile['keys'].push(authors[i]['key']);
+        }
+
+        storage.set(AUTH_COOKIE_KEY, profileOrToken, ttl);
+        this.set(profile);
+    } else {
+        this.set('token', profileOrToken);
     }
-    this.set(profile);
+
+    this.emit(LivefyreUser.EVENTS.LOGIN);
 };
 
 /**

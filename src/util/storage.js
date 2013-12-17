@@ -36,7 +36,9 @@ var html5Storage = {
         };
         try {
             localStorage.setItem(key, JSON.stringify(valueObj));
-        } catch(e) {}
+        } catch(e) {
+            console.log('set error');
+        }
     },
 
     /**
@@ -45,15 +47,15 @@ var html5Storage = {
      */
     get: function(key) {
         try {
-            var rawItem = localStorage.getItem(key),
-                valueObj = rawItem ? JSON.parse(rawItem) : {};
+            var rawItem = localStorage.getItem(key);
+            var valueObj = rawItem ? JSON.parse(rawItem) : {};
 
             /*
              * If stored object is expired:
              * - remove it
              * - return undefined
              */
-            if (valueObj.expiration > (+new Date())) {
+            if (valueObj.expiration < (+new Date())) {
                 html5Storage.remove(key);
                 return undefined;
             }
@@ -70,7 +72,9 @@ var html5Storage = {
     remove: function(key) {
         try {
             localStorage.removeItem(key);
-        } catch(e) {}
+        } catch(e) {
+            console.log('removal error');
+        }
     }
 };
 
@@ -86,11 +90,10 @@ var cookieStorage = {
      */
     set: function(key, value, opt_expiration) {
         function convertExpiration(exp) {
-            return new Date(exp).toUTCString()
+            return new Date(exp).toUTCString();
         }
 
         var expiration, expiresStr, oneWeekMs = 604800000;
-
 
         if (opt_expiration > 0) {
             expiration = convertExpiration(opt_expiration);

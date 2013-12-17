@@ -2,6 +2,7 @@
   "name": "auth-delegate-livefyre",
   "description": "Authentication delegates for Livefyre projects",
   "author": "Livefyre <support@livefyre.com>",
+  "repository": "https://github.com/Livefyre/auth-delegates",
   "contributors": {
     "name": "Ross Pfahler",
     "email": "ross@livefyre.com"

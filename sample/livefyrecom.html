@@ -13,46 +13,29 @@
                     logoutEl = document.getElementById('logout');
                 logoutEl.style.display = 'none';
 
-                // New User!
                 user.on('change', function(attributes) {
                     console.log('User changed!!!!');
-                    debugger;
                 });
 
+                user.on('login', function() {
+                    loginEl.style.display = 'none';
+                    logoutEl.style.display = 'inline';
+                });
+
+                user.on('logout', function() {
+                    loginEl.style.display = 'inline';
+                    logoutEl.style.display = 'none';
+                });
 
                 // Livefyre.com delegate
-                var d = new Delegate('2485933', 'http://www.fyre');
+                var d = new Delegate('2485918', 'http://www.fyre');
                 loginEl.onclick = function() {
-                    d.login(function(err, data) {
-                        if (err) {
-                            console.error('blah login failzorz');
-                            return;
-                        }
-                        login.style.display = 'none';
-                        logout.style.display = 'inline';
-                    });
+                    d.login();
                 };
-
                 logoutEl.onclick = function() {
-                    d.logout(function(err, data) {
-                        if (err) {
-                            return;
-                        }
-                        login.style.display = 'inline';
-                        logout.style.display = 'none';
-                        console.log('logout complete!');
-                    });
+                    d.logout();
                 };
-
-
-                d.loadSession(function(err, data) {
-                    if (err) {
-                        console.info('cannot login by cookie, but nice try anyways');
-                        return;
-                    }
-                    login.style.display = 'none';
-                    logout.style.display = 'inline';
-                });
+                //d.loadSession();
             });
         </script>
     <body>
