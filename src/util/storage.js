@@ -36,9 +36,7 @@ var html5Storage = {
         };
         try {
             localStorage.setItem(key, JSON.stringify(valueObj));
-        } catch(e) {
-            console.log('set error');
-        }
+        } catch(e) {}
     },
 
     /**
@@ -55,7 +53,7 @@ var html5Storage = {
              * - remove it
              * - return undefined
              */
-            if (valueObj.expiration < (+new Date())) {
+            if (valueObj.expiration && valueObj.expiration < (+new Date())) {
                 html5Storage.remove(key);
                 return undefined;
             }
@@ -72,9 +70,7 @@ var html5Storage = {
     remove: function(key) {
         try {
             localStorage.removeItem(key);
-        } catch(e) {
-            console.log('removal error');
-        }
+        } catch(e) {}
     }
 };
 
