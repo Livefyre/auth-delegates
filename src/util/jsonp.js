@@ -3,7 +3,7 @@
  */
 
 function req(url, callback) {
-    var rand = '_lfcallback_' + (new Date()).getTime(),
+    var rand = '_lfcallback_' + (+new Date()),
         script = document.createElement('script'),
         sep = url.indexOf('?') > 0 ? '&' : '?';
 
@@ -15,16 +15,16 @@ function req(url, callback) {
     }
 
     window[rand] = function(data) {
-        callback(null, data);
         clean();
+        callback(null, data);
     }
 
     script.type = 'text/javascript';
     script.async = true;
 
     script.onerror = function() {
-        callback('error');
         clean();
+        callback('error');
     };
 
     script.src = url + sep + 'callback=' + rand;
