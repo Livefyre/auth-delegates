@@ -1,4 +1,5 @@
-var jsonp = require('auth-delegates/util/jsonp'),
+var bind = require('auth-delegates/util/bind'),
+    jsonp = require('auth-delegates/util/jsonp'),
     storage = require('auth-delegates/util/storage'),
     user = require('auth-delegates/user'),
     userAgent = navigator.userAgent,
@@ -6,25 +7,35 @@ var jsonp = require('auth-delegates/util/jsonp'),
     AUTH_COOKIE_KEY = 'fyre-auth';
 
 /**
- * @param {string|number} collectionId
- * @param {string} serverUrl
  * @constructor
  */
-function LivefyreDelegate(collectionId, serverUrl) {
-    this._collectionId = collectionId;
-    this._serverUrl = serverUrl;
+function LivefyreDelegate() {
+    this.collectionId = null;
+    this.serverUrl = null;
+    user.on('change:token', bind(this.fetchAuthData, this));
 }
 
 /**
- * Login
+ * Fire login popup, and on success login the user.
  */
 LivefyreDelegate.prototype.login = function() {
-    this._popup(function(err, resp) {
-        if (err || resp['status'] === 'error') {
-            return;
-        }
-        user.login(resp['data']);
-    });
+    this._popup();
+};
+
+LivefyreDelegate.prototype.fetchAuthData = function() {
+    if (!user.get('token')) {
+        user.remoteLogin(this.collectionId, this.serverUrl);
+    }
+};
+
+/**
+ * To be invoked when collectionId is known.
+ * @param {string} collectionId
+ * @param {string} opt_serverUrl
+ */
+LivefyreDelegate.prototype.setCollection = function(collectionId, opt_serverUrl) {
+    this.collectionId = collectionId;
+    this.serverUrl = opt_serverUrl;
 };
 
 /**
@@ -32,11 +43,10 @@ LivefyreDelegate.prototype.login = function() {
  */
 LivefyreDelegate.prototype.loadSession = function() {
     var cookieData = storage.get(AUTH_COOKIE_KEY) || {};
-    if (cookieData['token'] === token) {
-        user.login(cookieData);
+    if (cookieData['token']) {
+        user.login(cookieData['token']['value']);
     } else {
         storage.remove(AUTH_COOKIE_KEY);
-        user.set('token', token);
     }
 };
 
@@ -45,8 +55,8 @@ LivefyreDelegate.prototype.loadSession = function() {
  * @private
  */
 LivefyreDelegate.prototype._popup = function(callback) {
-    var serverUrl = this._serverUrl,
-        collectionId = this._collectionId,
+    var serverUrl = this.serverUrl,
+        collectionId = this.collectionId,
 
         windowUrl = serverUrl + '/auth/popup/login/?collectionId=' + collectionId,
         popup = window.open(windowUrl, 'authWindow',
@@ -55,12 +65,6 @@ LivefyreDelegate.prototype._popup = function(callback) {
         timeout = setInterval(function() {
             testResult(callback, popup);
         }, 100);
-
-
-    function fetchAuthData(callback) {
-        var url = serverUrl + '/api/v3.0/auth/?collectionId=' + collectionId;
-        jsonp.req(url, callback);
-    }
 
     function isActive(popup) {
         if (!popup) {
@@ -80,7 +84,7 @@ LivefyreDelegate.prototype._popup = function(callback) {
     function testResult(callback, popup) {
         if (!isActive(popup)) {
             clearInterval(timeout);
-            fetchAuthData(callback);
+            user.remoteLogin(collectionId, serverUrl);
             return;
         }
     }
@@ -90,7 +94,7 @@ LivefyreDelegate.prototype._popup = function(callback) {
  * @param {function()} callback
  */
 LivefyreDelegate.prototype.logout = function() {
-    var url = this._serverUrl + '/auth/logout/ajax/?nocache=' + (new Date()).getTime();
+    var url = this.serverUrl + '/auth/logout/ajax/?nocache=' + (new Date()).getTime();
     jsonp.req(url, function(err, data) {
         if (!err) {
             user.logout();
@@ -104,6 +108,12 @@ LivefyreDelegate.prototype.viewProfile = function() {
 
 LivefyreDelegate.prototype.editProfile = function() {
     window.open(this._serverUrl + '/profile/edit/info/', '_blank');
+};
+
+LivefyreDelegate.prototype.destroy = function() {
+    this.collectionId = null;
+    this.serverUrl = null;
+    user.removeListener('change:token', bind(this.fetchAuthData, this));
 };
 
 module.exports = LivefyreDelegate;

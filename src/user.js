@@ -8,6 +8,7 @@
 
 var EventEmitter = require('event-emitter'),
     inherits = require('inherits'),
+    jsonp = require('auth-delegates/util/jsonp'),
     storage = require('auth-delegates/util/storage'),
     AUTH_COOKIE_KEY = 'fyre-auth';
 
@@ -63,11 +64,13 @@ LivefyreUser.prototype.set = function(keyOrObj, opt_value) {
         tempKey = keyOrObj;
         keyOrObj = {};
         keyOrObj[tempKey] = opt_value;
+        this.emit(LivefyreUser.EVENTS.CHANGE + ':' + tempKey, opt_value);
     }
 
     for (k in keyOrObj) {
         val = keyOrObj[k];
         this._attributes[k] = val;
+        this.emit(LivefyreUser.EVENTS.CHANGE + ':' + k, val);
     }
     this.emit(LivefyreUser.EVENTS.CHANGE, keyOrObj);
 };
@@ -89,7 +92,7 @@ LivefyreUser.prototype.unset = function(key) {
         delete this._attributes[key];
         var obj = {};
         obj[key] = void 0;
-        this.emit(LivefyreUser.EVENTS.CHANGE, obj);
+        this.emit(LivefyreUser.EVENTS.CHANGE + ':' + key, obj);
     }
 };
 
@@ -97,28 +100,44 @@ LivefyreUser.prototype.unset = function(key) {
  * Clear all attributes back to defaults.
  */
 LivefyreUser.prototype.logout = LivefyreUser.prototype.reset = function() {
-    this._attributes = LivefyreUser.getDefaults();
+    this._attributes = {};
+    this.set(LivefyreUser.getDefaults());
     storage.remove(AUTH_COOKIE_KEY);
     this.emit(LivefyreUser.EVENTS.LOGOUT);
 };
 
 /**
- * From a auth response, set up the profile object (or a token). The following things happen:
- *  - Parse data
- *  - Save token and profile in storage
- *  - Trigger login event
- * @param {Object|string) profileOrToken
+ * Simply sets the token. It is up to the authentication delegates to invoke the "remoteLogin"
+ * by listening to "change:token".
+ * @param {string) token
  */
-LivefyreUser.prototype.login = function(profileOrToken) {
-    if (typeof profileOrToken !== 'string') {
-        var profile = profileOrToken['profile'],
-            permissions = profileOrToken['permissions'],
+LivefyreUser.prototype.login = function(token) {
+    this.set('token', token);
+};
+
+/**
+ * @param {string} collectionId
+ * @param {string=} opt_serverUrl
+ */
+LivefyreUser.prototype.remoteLogin = function(collectionId, opt_serverUrl) {
+    var url = (opt_serverUrl || 'http://livefyre.com') + '/api/v3.0/auth/?collectionId=' + collectionId,
+        self = this,
+        token = this.get('token');
+
+    url += token ? '&token=' + token : '';
+    jsonp.req(url, function(err, resp) {
+        if (err || (resp['data'] && !resp['data']['profile'])) {
+            return;
+        }
+
+        var data = resp['data'],
+            profile = data['profile'],
+            permissions = data['permissions'],
             authors = permissions['authors'],
             modKey = permissions['moderator_key'],
-            tokenObj = profileOrToken['token'],
+            tokenObj = data['token'],
             ttl = (+new Date()) + tokenObj['ttl'];
 
-        profile['token'] = tokenObj['value'];
         profile['mod'] = !!modKey;
         profile['keys'] = [modKey];
 
@@ -126,18 +145,15 @@ LivefyreUser.prototype.login = function(profileOrToken) {
             profile['keys'].push(authors[i]['key']);
         }
 
-        storage.set(AUTH_COOKIE_KEY, profileOrToken, ttl);
-        this.set(profile);
-    } else {
-        this.set('token', profileOrToken);
-    }
-
-    this.emit(LivefyreUser.EVENTS.LOGIN);
+        storage.set(AUTH_COOKIE_KEY, data, ttl);
+        self.set(profile);
+        self.emit(LivefyreUser.EVENTS.LOGIN, profile);
+    });
 };
 
 /**
  * Set up global livefyre user object.
  */
-window.livefyre = window.livefyre || {};
-window.livefyre.user = window.livefyre.user || new LivefyreUser();
-module.exports = window.livefyre.user;
+window.Livefyre = window.Livefyre || {};
+window.Livefyre.user = window.Livefyre.user || new LivefyreUser();
+module.exports = window.Livefyre.user;

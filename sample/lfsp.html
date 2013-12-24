@@ -1,12 +1,13 @@
 <!doctype html>
 <html>
     <head>
-        <title>Livefyre.com Auth Sample</title>
+        <title>LFSP Auth Sample</title>
+        <script src="https://profiles-0.qa-ext.livefyre.com/media/cHJvZmlsZXMtMC5xYS1leHQubGl2ZWZ5cmUuY29t/javascripts/customprofiles.js"></script> 
         <script src="../lib/cajon/cajon.js"></script>
         <script src="../requirejs.conf.js"></script>
         <script>
             require([
-                'auth-delegates/delegates/livefyre',
+                'auth-delegates/delegates/lfsp',
                 'auth-delegates/user'
             ], function(Delegate, user) {
                 var loginEl = document.getElementById('login'),
@@ -27,17 +28,22 @@
                     logoutEl.style.display = 'none';
                 });
 
-                // Livefyre.com delegate
-                var d = new Delegate();
-                d.setCollection('2485918', 'http://www.fyre');
-                loginEl.onclick = function() {
+                // Lfsp delegate
+                var d = new Delegate('2485918', 'http://www.fyre', {
+                	engageOpts: {
+                		app: 'livefyre-dev'
+                	},
+                	profileOpts: {}
+               	});
+                loginEl.onclick = function(ev) {
+                	ev.preventDefault();
                     d.login();
                 };
-                logoutEl.onclick = function() {
+                logoutEl.onclick = function(ev) {
+                	ev.preventDefault();
                     d.logout();
                 };
-                d.loadSession();
-            });
+			});
         </script>
     <body>
         <h1>Livefyre.com Auth Sample</h1>
