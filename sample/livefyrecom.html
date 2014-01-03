@@ -9,6 +9,7 @@
                 'auth-delegates/delegates/livefyre',
                 'auth-delegates/user'
             ], function(Delegate, user) {
+
                 var loginEl = document.getElementById('login'),
                     logoutEl = document.getElementById('logout');
                 logoutEl.style.display = 'none';
@@ -28,8 +29,7 @@
                 });
 
                 // Livefyre.com delegate
-                var d = new Delegate();
-                d.setCollection('2485918', 'http://www.fyre');
+                var d = new Delegate('NjkzOTg4LjQzNzUzMTUxNg==', '286470', 'http://www.fyre');
                 loginEl.onclick = function() {
                     d.login();
                 };
@@ -39,6 +39,7 @@
                 d.loadSession();
             });
         </script>
+    </head>
     <body>
         <h1>Livefyre.com Auth Sample</h1>
         <a href="#" id="login">Login</a>

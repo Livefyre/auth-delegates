@@ -18,18 +18,14 @@ describe('lfsp delegate', function() {
 			chai.assert.isFunction(LfspDelegate.prototype.editProfile);
 		});
 
-		it('has login and logout handlers', function() {
+		it('has login, loadSession, and logout handlers', function() {
 			chai.assert.isFunction(LfspDelegate.prototype.login);
+			chai.assert.isFunction(LfspDelegate.prototype.loadSession);
 			chai.assert.isFunction(LfspDelegate.prototype.logout);
 		});
 
-		it('has setCollection and loadSession handlers', function() {
-			chai.assert.isFunction(LfspDelegate.prototype.setCollection);
-			chai.assert.isFunction(LfspDelegate.prototype.loadSession);
-		});
-
 		it('is constructable and destroyable', function() {
-			var delegate = new LfspDelegate();
+			var delegate = new LfspDelegate('abc', 'def');
 			chai.assert.isFunction(LfspDelegate.prototype.destroy);
 			delegate.destroy();
 		});

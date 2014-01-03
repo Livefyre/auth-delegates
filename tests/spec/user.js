@@ -94,7 +94,7 @@ describe('auth-delegates/user', function() {
 
     describe('Remote login works', function() {
         it('Hits "server" and parses profile', function(done) {
-            user.remoteLogin('123', 'http://localhost:8090', function() {
+            user.remoteLogin('123', '456', 'http://localhost:8090', function() {
                 chai.assert(user.get('id') === '_u696@livefyre.com');
                 chai.assert(user.isMod('123'));
                 done();
@@ -102,7 +102,7 @@ describe('auth-delegates/user', function() {
         });
 
         it('Sets and clear storage', function(done) {
-            user.remoteLogin('123', 'http://localhost:8090', function() {
+            user.remoteLogin('123', '456', 'http://localhost:8090', function() {
                 var authData = storage.get('fyre-auth');
                 chai.assert.deepEqual(authData, sampleProfile);
                 user.logout();

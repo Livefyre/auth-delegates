@@ -11,10 +11,15 @@ var SP_EVENTS = {
 };
 
 /**
+ * @param {string} articleId
+ * @param {string} siteId
  * @param {Object=} opt_config Configuration options
  * @constructor
  */
-function LfspDelegate(opt_config) {
+function LfspDelegate(articleId, siteId, opt_config) {
+    this.articleId = articleId;
+    this.siteId = siteId;
+
 	var config = opt_config || {};
 
 	var spObject = this.spObject = window.fyre.sp;
@@ -23,21 +28,12 @@ function LfspDelegate(opt_config) {
 
     spObject.on(SP_EVENTS.LOGIN_COMPLETE, function(data) {
         user.login(data['token']);
-        user.remoteLogin(this.collectionId, this.serverUrl);
+        user.remoteLogin(this.articleId, this.siteId, this.serverUrl);
     }, this);
     spObject.on(SP_EVENTS.LOGOUT_COMPLETE, function() {
         user.logout();
     }, this);
 }
-
-/**
- * @param {number|string} collectionId
- * @param {string} serverUrl <network>.fyre.co formatted url (with http://).
- */
-LfspDelegate.prototype.setCollection = function(collectionId, serverUrl) {
-    this.collectionId = collectionId;
-    this.serverUrl = serverUrl;
-};
 
 /**
  *
@@ -109,7 +105,8 @@ LfspDelegate.prototype.editProfile = function() {
  */
 LfspDelegate.prototype.destroy = function() {
     this.spObject.off(null, null, this);
-    this.collectionId =
+    this.articleId =
+        this.siteId =
         this.serverUrl =
         this.profileApp =
         this.engageApp = null;

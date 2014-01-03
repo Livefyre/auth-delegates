@@ -102,9 +102,9 @@ LivefyreUser.prototype.login = function(token) {
 
 /**
  * @param {Object} data
- * @param {sting} collectionId
+ * @param {sting} articleId
  */
-LivefyreUser.prototype.loadSession = function(data, collectionId) {
+LivefyreUser.prototype.loadSession = function(data, articleId) {
     var profile = data['profile'],
         permissions = data['permissions'],
         authors = permissions['authors'],
@@ -122,7 +122,7 @@ LivefyreUser.prototype.loadSession = function(data, collectionId) {
 
     if (modKey) {
         var modMap = this.get('modMap');
-        modMap[collectionId] = modKey;
+        modMap[articleId] = modKey;
         this.set('modMap', modMap);
     }
 
@@ -133,17 +133,19 @@ LivefyreUser.prototype.loadSession = function(data, collectionId) {
  * @param {string} collectionId
  * @return {boolean}
  */
-LivefyreUser.prototype.isMod = function(collectionId) {
-    return collectionId in this.get('modMap');
+LivefyreUser.prototype.isMod = function(articleId) {
+    return articleId in this.get('modMap');
 };
 
 /**
- * @param {string} collectionId
+ * @param {string} articleId
+ * @param {string} siteId
  * @param {string=} opt_serverUrl
  * @param {function()=} opt_callback
  */
-LivefyreUser.prototype.remoteLogin = function(collectionId, opt_serverUrl, opt_callback) {
-    var url = (opt_serverUrl || 'http://livefyre.com') + '/api/v3.0/auth/?collectionId=' + collectionId,
+LivefyreUser.prototype.remoteLogin = function(articleId, siteId, opt_serverUrl, opt_callback) {
+    var queryParams = 'articleId=' + articleId + '&siteId=' + siteId,
+        url = (opt_serverUrl || 'http://livefyre.com') + '/api/v3.0/auth/?' + queryParams,
         self = this,
         token = this.get('token');
 
@@ -155,7 +157,7 @@ LivefyreUser.prototype.remoteLogin = function(collectionId, opt_serverUrl, opt_c
         var data = resp['data'],
             tokenObj = data['token'],
             ttl = (+new Date()) + tokenObj['ttl'];
-        self.loadSession(data, collectionId);        
+        self.loadSession(data, articleId);
         storage.set(AUTH_COOKIE_KEY, data, ttl);
         opt_callback && opt_callback(data);
     });

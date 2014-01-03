@@ -7,18 +7,14 @@ describe('livefyre.com delegate', function() {
 			chai.assert.isFunction(LivefyreDelegate.prototype.editProfile);
 		});
 
-		it('has login and logout handlers', function() {
+		it('has login, loadSession, and logout handlers', function() {
 			chai.assert.isFunction(LivefyreDelegate.prototype.login);
+			chai.assert.isFunction(LivefyreDelegate.prototype.loadSession);
 			chai.assert.isFunction(LivefyreDelegate.prototype.logout);
 		});
 
-		it('has setCollection and loadSession handlers', function() {
-			chai.assert.isFunction(LivefyreDelegate.prototype.setCollection);
-			chai.assert.isFunction(LivefyreDelegate.prototype.loadSession);
-		});
-
 		it('is constructable and destroyable', function() {
-			var delegate = new LivefyreDelegate();
+			var delegate = new LivefyreDelegate('abc', 'def');
 			chai.assert.isFunction(LivefyreDelegate.prototype.destroy);
 			delegate.destroy();
 		});

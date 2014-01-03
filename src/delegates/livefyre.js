@@ -7,11 +7,15 @@ var bind = require('auth-delegates/util/bind'),
     AUTH_COOKIE_KEY = 'fyre-auth';
 
 /**
+ * @param {string} articleId
+ * @param {string} siteId
+ * @param {string} serverUrl
  * @constructor
  */
-function LivefyreDelegate() {
-    this.collectionId = null;
-    this.serverUrl = null;
+function LivefyreDelegate(articleId, siteId, serverUrl) {
+    this.articleId = articleId;
+    this.siteId = siteId;
+    this.serverUrl = serverUrl;
     user.on('loginRequested', bind(this.fetchAuthData, this));
 }
 
@@ -24,18 +28,8 @@ LivefyreDelegate.prototype.login = function() {
 
 LivefyreDelegate.prototype.fetchAuthData = function() {
     if (!user.get('token')) {
-        user.remoteLogin(this.collectionId, this.serverUrl);
+        user.remoteLogin(this.articleId, this.siteId, this.serverUrl);
     }
-};
-
-/**
- * To be invoked when collectionId is known.
- * @param {string} collectionId
- * @param {string} opt_serverUrl
- */
-LivefyreDelegate.prototype.setCollection = function(collectionId, opt_serverUrl) {
-    this.collectionId = collectionId;
-    this.serverUrl = opt_serverUrl;
 };
 
 /**
@@ -56,9 +50,10 @@ LivefyreDelegate.prototype.loadSession = function() {
  */
 LivefyreDelegate.prototype._popup = function(callback) {
     var serverUrl = this.serverUrl,
-        collectionId = this.collectionId,
+        articleId = this.articleId,
+        siteId = this.siteId,
 
-        windowUrl = serverUrl + '/auth/popup/login/?collectionId=' + collectionId,
+        windowUrl = serverUrl + '/auth/popup/login/?articleId=' + articleId + '&siteId=' + siteId,
         popup = window.open(windowUrl, 'authWindow',
         'width=530;height=365;location=true;menubar=false;resizable=false;scrollbars=false'),
 
@@ -84,7 +79,7 @@ LivefyreDelegate.prototype._popup = function(callback) {
     function testResult(callback, popup) {
         if (!isActive(popup)) {
             clearInterval(timeout);
-            user.remoteLogin(collectionId, serverUrl);
+            user.remoteLogin(articleId, siteId, serverUrl);
             return;
         }
     }
@@ -111,8 +106,7 @@ LivefyreDelegate.prototype.editProfile = function() {
 };
 
 LivefyreDelegate.prototype.destroy = function() {
-    this.collectionId = null;
-    this.serverUrl = null;
+    this.articleId = this.siteId = this.serverUrl = null;
     user.removeListener('loginRequested', bind(this.fetchAuthData, this));
 };
 
