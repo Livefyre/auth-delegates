@@ -23,6 +23,7 @@ function LfspDelegate(opt_config) {
 
     spObject.on(SP_EVENTS.LOGIN_COMPLETE, function(data) {
         user.login(data['token']);
+        user.remoteLogin(this.collectionId, this.serverUrl);
     }, this);
     spObject.on(SP_EVENTS.LOGOUT_COMPLETE, function() {
         user.logout();
@@ -39,9 +40,9 @@ LfspDelegate.prototype.setCollection = function(collectionId, serverUrl) {
 };
 
 /**
- * @param {function()} callback
+ *
  */
-LfspDelegate.prototype.login = function(callback) {
+LfspDelegate.prototype.login = function() {
     function success(data) {
         user.login(data['token']);
         this.spObject.off(SP_EVENTS.LOGIN_COMPLETE, success);

@@ -13,27 +13,11 @@ var EventEmitter = require('event-emitter'),
     AUTH_COOKIE_KEY = 'fyre-auth';
 
 /**
- * Simple extends function. Operates in place
- * @param {Object} target
- * @param {...Object} var_args
- */
-function extend(target, var_args) {
-    var key, source, i;
-    for (i = 1; i < arguments.length; i++) {
-        source = arguments[i];
-        for (key in source) {
-            target[key] = source[key];
-        }
-    }
-}
-
-/**
  * @param {Object} initialAttr
  * @constructor
  */
 function LivefyreUser(initialAttr) {
     this._attributes = LivefyreUser.getDefaults();
-    extend(this._attributes, initialAttr || {});
     EventEmitter.call(this);
 }
 inherits(LivefyreUser, EventEmitter);
@@ -41,7 +25,7 @@ inherits(LivefyreUser, EventEmitter);
 /** @return {Object.<string, *>} */
 LivefyreUser.getDefaults = function() {
     return {
-        'mod': false,
+        'modMap': {},
         'keys': []
     };
 };
@@ -50,7 +34,8 @@ LivefyreUser.getDefaults = function() {
 LivefyreUser.EVENTS = {
     CHANGE: 'change',
     LOGOUT: 'logout',
-    LOGIN: 'login'
+    LOGIN: 'login',
+    LOGIN_REQUESTED: 'loginRequested'
 };
 
 /**
@@ -64,7 +49,6 @@ LivefyreUser.prototype.set = function(keyOrObj, opt_value) {
         tempKey = keyOrObj;
         keyOrObj = {};
         keyOrObj[tempKey] = opt_value;
-        this.emit(LivefyreUser.EVENTS.CHANGE + ':' + tempKey, opt_value);
     }
 
     for (k in keyOrObj) {
@@ -92,7 +76,7 @@ LivefyreUser.prototype.unset = function(key) {
         delete this._attributes[key];
         var obj = {};
         obj[key] = void 0;
-        this.emit(LivefyreUser.EVENTS.CHANGE + ':' + key, obj);
+        this.emit(LivefyreUser.EVENTS.CHANGE + ':' + key, obj[key]);
     }
 };
 
@@ -113,13 +97,52 @@ LivefyreUser.prototype.logout = LivefyreUser.prototype.reset = function() {
  */
 LivefyreUser.prototype.login = function(token) {
     this.set('token', token);
+    this.emit(LivefyreUser.EVENTS.LOGIN_REQUESTED, token);
+};
+
+/**
+ * @param {Object} data
+ * @param {sting} collectionId
+ */
+LivefyreUser.prototype.loadSession = function(data, collectionId) {
+    var profile = data['profile'],
+        permissions = data['permissions'],
+        authors = permissions['authors'],
+        modKey = permissions['moderator_key'],
+        tokenObj = data['token'],
+        ttl = (+new Date()) + tokenObj['ttl'],
+        keys = [modKey],
+        existingKeys = this.get('keys');
+
+    for (var i = 0; i < authors.length; i++) {
+        keys.push(authors[i]['key']);
+    }
+    this.set(profile);
+    this.set('keys', existingKeys.concat(keys));
+
+    if (modKey) {
+        var modMap = this.get('modMap');
+        modMap[collectionId] = modKey;
+        this.set('modMap', modMap);
+    }
+
+    this.emit(LivefyreUser.EVENTS.LOGIN, profile);
+};
+
+/**
+ * @param {string} collectionId
+ * @return {boolean}
+ */
+LivefyreUser.prototype.isMod = function(collectionId) {
+    return collectionId in this.get('modMap');
 };
 
 /**
  * @param {string} collectionId
  * @param {string=} opt_serverUrl
+ * @param {function()=} opt_callback
  */
-LivefyreUser.prototype.remoteLogin = function(collectionId, opt_serverUrl) {
+LivefyreUser.prototype.remoteLogin = function(collectionId, opt_serverUrl, opt_callback) {
     var url = (opt_serverUrl || 'http://livefyre.com') + '/api/v3.0/auth/?collectionId=' + collectionId,
         self = this,
         token = this.get('token');
@@ -129,25 +152,12 @@ LivefyreUser.prototype.remoteLogin = function(collectionId, opt_serverUrl) {
         if (err || (resp['data'] && !resp['data']['profile'])) {
             return;
         }
-
         var data = resp['data'],
-            profile = data['profile'],
-            permissions = data['permissions'],
-            authors = permissions['authors'],
-            modKey = permissions['moderator_key'],
             tokenObj = data['token'],
             ttl = (+new Date()) + tokenObj['ttl'];
-
-        profile['mod'] = !!modKey;
-        profile['keys'] = [modKey];
-
-        for (var i = 0; i < authors.length; i++) {
-            profile['keys'].push(authors[i]['key']);
-        }
-
+        self.loadSession(data, collectionId);        
         storage.set(AUTH_COOKIE_KEY, data, ttl);
-        self.set(profile);
-        self.emit(LivefyreUser.EVENTS.LOGIN, profile);
+        opt_callback && opt_callback(data);
     });
 };
 

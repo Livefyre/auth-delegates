@@ -3,14 +3,15 @@
  */
 
 var jsonp = require('auth-delegates/util/jsonp'),
-	serverEcho = 'http://jsfiddle.net/echo/jsonp/',
+	serverEcho = 'http://localhost:8090/echo/jsonp/',
 	data = {
 		'abc': 'def'
 	};
 
 describe('auth-delegates/util/jsonp', function() {
+	this.timeout(10000);
 	it('successfully makes request', function(done) {
-		jsonp.req(serverEcho + '?json=' + JSON.stringify(data), function(error, response) {
+		jsonp.req(serverEcho + '?data=' + JSON.stringify(data), function(error, response) {
 			chai.assert(!error);
 			chai.assert('abc' in data);
 			chai.assert.equal('def', data['abc']);
@@ -27,7 +28,7 @@ describe('auth-delegates/util/jsonp', function() {
 	});
 
 	it('cleans up lingering globals and script tags', function(done) {
-		jsonp.req(serverEcho + '?json=' + JSON.stringify(data), function(error, response) {
+		jsonp.req(serverEcho + '?data=' + JSON.stringify(data), function(error, response) {
 			// not sure how to do this otherwise
 			for (var prop in window) {
 				chai.assert(prop.indexOf('_lfcallback_') < 0);

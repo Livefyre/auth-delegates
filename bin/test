@@ -6,8 +6,7 @@ ARGS="${*:1}"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Start an HTTP Server
-$DIR/../node_modules/http-server/bin/http-server -p 8090 > /dev/null &
-HTTP_SERVER_PID=$!
+node $DIR/../server.js & HTTP_SERVER_PID=$!
 
 # Run mocha-phantomjs
 $DIR/../node_modules/mocha-phantomjs/bin/mocha-phantomjs $ARGS http://localhost:8090/tests/runner.html

@@ -29,12 +29,13 @@
                 });
 
                 // Lfsp delegate
-                var d = new Delegate('2485918', 'http://www.fyre', {
+                var d = new Delegate({
                 	engageOpts: {
                 		app: 'livefyre-dev'
                 	},
                 	profileOpts: {}
                	});
+                d.setCollection(2486422);
                 loginEl.onclick = function(ev) {
                 	ev.preventDefault();
                     d.login();
@@ -46,7 +47,7 @@
 			});
         </script>
     <body>
-        <h1>Livefyre.com Auth Sample</h1>
+        <h1>LFSP Auth Sample</h1>
         <a href="#" id="login">Login</a>
         <span id="userinfo"></span>
         <a href="#" id="logout">Logout</a>

@@ -2,19 +2,21 @@
  * @fileoverview global user singleton unit tests.
  */
 
-var user = require('auth-delegates/user'),
-	sampleProfile = {"profile":{"profileUrl":"admin.fy.re/profile/696/","settingsUrl":"admin.fy.re/profile/edit/info","displayName":"systemowner","avatar":"http://gravatar.com/avatar/f79fae57457a4204aeb07e92f81019bd/?s=50&d=http://d25bq1kaa0xeba.cloudfront.net/a/anon/50.jpg","id":"_u696@livefyre.com"},"token":{"value":"eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJkb21haW4iOiAibGl2ZWZ5cmUuY29tIiwgImV4cGlyZXMiOiAxMzg5NTc0NzIzLjgyODUzOSwgInVzZXJfaWQiOiAiX3U2OTYifQ.wUFdqAPwCOzeuYcHVGdbVdAvdSto6Td65mfDlvDw-iY","ttl":2592000},"version":"__VERSION__","isModAnywhere":true,"permissions":{"moderator_key":"8d565e9925fbd3aaf2e3dc989f4c58ab485574e8","authors":[{"id":"_u696@livefyre.com","key":"cbeee2ca676b7e9641f2c177d880e3ca3ecc295a"}]}},
-    storage = require('auth-delegates/util/storage');
+var storage = require('auth-delegates/util/storage'),
+    user = require('auth-delegates/user'),
+    // TODO(rrp): This is already included in ./tests/fixtures/auth.json, so we should probably
+    // just use one version.
+    sampleProfile = {"profile":{"profileUrl":"admin.fy.re/profile/696/","settingsUrl":"admin.fy.re/profile/edit/info","displayName":"systemowner","avatar":"http://gravatar.com/avatar/f79fae57457a4204aeb07e92f81019bd/?s=50&d=http://d25bq1kaa0xeba.cloudfront.net/a/anon/50.jpg","id":"_u696@livefyre.com"},"token":{"value":"eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJkb21haW4iOiAibGl2ZWZ5cmUuY29tIiwgImV4cGlyZXMiOiAxMzg5NTc0NzIzLjgyODUzOSwgInVzZXJfaWQiOiAiX3U2OTYifQ.wUFdqAPwCOzeuYcHVGdbVdAvdSto6Td65mfDlvDw-iY","ttl":2592000},"version":"__VERSION__","isModAnywhere":true,"permissions":{"moderator_key":"8d565e9925fbd3aaf2e3dc989f4c58ab485574e8","authors":[{"id":"_u696@livefyre.com","key":"cbeee2ca676b7e9641f2c177d880e3ca3ecc295a"}]}};
 
 describe('auth-delegates/user', function() {
     describe('is global', function() {
         it('has a fancy namespace', function() {
-            chai.assert(typeof(livefyre) == 'object');
-            chai.assert(typeof(livefyre.user) == 'object');
-            chai.assert(typeof(livefyre.user.login) == 'function');
-            chai.assert(typeof(livefyre.user.logout) == 'function');
-            chai.assert(typeof(livefyre.user.on) == 'function');
-            chai.assert(typeof(livefyre.user.removeListener) == 'function');
+            chai.assert(typeof(Livefyre) == 'object');
+            chai.assert(typeof(Livefyre.user) == 'object');
+            chai.assert(typeof(Livefyre.user.login) == 'function');
+            chai.assert(typeof(Livefyre.user.logout) == 'function');
+            chai.assert(typeof(Livefyre.user.on) == 'function');
+            chai.assert(typeof(Livefyre.user.removeListener) == 'function');
         });
     });
 
@@ -27,9 +29,9 @@ describe('auth-delegates/user', function() {
     		user.set('token', 'abc');
     		chai.assert(changeFired);
     	});
-    	it('fires login event', function() {
+    	it('fires loginRequested event', function() {
     		var changeFired = false;
-    		user.on('login', function() {
+    		user.on('loginRequested', function() {
     			changeFired = true;
     		});
     		user.login('abcdefg');
@@ -69,11 +71,11 @@ describe('auth-delegates/user', function() {
     });
 
     describe('Login user and logout user correctly', function() {
-    	it('login parses profile data', function() {
-            user.login(sampleProfile);
+    	it('parses profile data', function() {
+            user.loadSession(sampleProfile, '123');
 
             chai.assert(user.get('id') === '_u696@livefyre.com');
-            chai.assert(user.get('mod'));
+            chai.assert(user.isMod('123'));
             chai.assert(user.get('profileUrl') === 'admin.fy.re/profile/696/');
             chai.assert(user.get('settingsUrl') === 'admin.fy.re/profile/edit/info');
             chai.assert(user.get('displayName') === 'systemowner');
@@ -90,14 +92,24 @@ describe('auth-delegates/user', function() {
     	});
     });
 
-    describe('Storage for user login and logout works', function() {
-        it('Sets and clear storage', function() {
-            user.login(sampleProfile);
-            var authData = storage.get('fyre-auth');
-            chai.assert.deepEqual(authData, sampleProfile);
-            user.logout();
-            authData = storage.get('fyre-auth');
-            chai.assert.isUndefined(authData);
+    describe('Remote login works', function() {
+        it('Hits "server" and parses profile', function(done) {
+            user.remoteLogin('123', 'http://localhost:8090', function() {
+                chai.assert(user.get('id') === '_u696@livefyre.com');
+                chai.assert(user.isMod('123'));
+                done();
+            });
+        });
+
+        it('Sets and clear storage', function(done) {
+            user.remoteLogin('123', 'http://localhost:8090', function() {
+                var authData = storage.get('fyre-auth');
+                chai.assert.deepEqual(authData, sampleProfile);
+                user.logout();
+                authData = storage.get('fyre-auth');
+                chai.assert.isUndefined(authData);
+                done();
+            });
         });
     });
 });

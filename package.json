@@ -11,6 +11,7 @@
   "devDependencies": {
     "bower": "*",
     "chai": "1.8.1",
+    "express": "*",
     "http-server": "*",
     "mocha": "1.14.0",
     "mocha-phantomjs": "3.1.6",
@@ -18,7 +19,7 @@
   },
   "scripts": {
     "postinstall": "./node_modules/bower/bin/bower install",
-    "start": "./node_modules/http-server/bin/http-server .",
+    "start": "node ./server.js",
     "test": "./bin/test"
   }
 }

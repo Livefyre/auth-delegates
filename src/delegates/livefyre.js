@@ -12,7 +12,7 @@ var bind = require('auth-delegates/util/bind'),
 function LivefyreDelegate() {
     this.collectionId = null;
     this.serverUrl = null;
-    user.on('change:token', bind(this.fetchAuthData, this));
+    user.on('loginRequested', bind(this.fetchAuthData, this));
 }
 
 /**
@@ -44,7 +44,7 @@ LivefyreDelegate.prototype.setCollection = function(collectionId, opt_serverUrl)
 LivefyreDelegate.prototype.loadSession = function() {
     var cookieData = storage.get(AUTH_COOKIE_KEY) || {};
     if (cookieData['token']) {
-        user.login(cookieData['token']['value']);
+        user.loadSession(cookieData);
     } else {
         storage.remove(AUTH_COOKIE_KEY);
     }
@@ -113,7 +113,7 @@ LivefyreDelegate.prototype.editProfile = function() {
 LivefyreDelegate.prototype.destroy = function() {
     this.collectionId = null;
     this.serverUrl = null;
-    user.removeListener('change:token', bind(this.fetchAuthData, this));
+    user.removeListener('loginRequested', bind(this.fetchAuthData, this));
 };
 
 module.exports = LivefyreDelegate;

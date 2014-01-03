@@ -1,11 +1,13 @@
 <!doctype html>
 <html>
     <head>
+        <title>Auth Delegates Test Runner</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
     </head>
-    <body>
-        <div id="mocha"></div>
+    <body id="mocha">
+        <h1>Auth Delegates Test Runner</h1>
+        <div></div>
         <script src="../node_modules/mocha/mocha.js"></script>
         <script src="../node_modules/chai/chai.js"></script>
         <script src="../lib/cajon/cajon.js"></script>
@@ -20,6 +22,8 @@
                  * This should probably be automated.
                  */
                 'auth-delegates-tests/spec/user',
+                'auth-delegates-tests/spec/delegates/livefyre',
+                'auth-delegates-tests/spec/delegates/lfsp',
                 'auth-delegates-tests/spec/util/jsonp',
                 'auth-delegates-tests/spec/util/storage'
             ], function() {
