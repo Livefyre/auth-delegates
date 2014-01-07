@@ -81,6 +81,7 @@ describe('auth-delegates/user', function() {
             chai.assert(user.get('displayName') === 'systemowner');
             chai.assert(user.get('keys').length === 2);
             chai.assert(user.get('avatar') === 'http://gravatar.com/avatar/f79fae57457a4204aeb07e92f81019bd/?s=50&d=http://d25bq1kaa0xeba.cloudfront.net/a/anon/50.jpg');
+            chai.assert(user.get('token') === sampleProfile['token']['value']);
             user.logout();
     	});
     	it('logout clears profile data', function() {
