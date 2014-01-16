@@ -97,8 +97,11 @@ LivefyreDelegate.prototype.logout = function() {
     });
 };
 
-LivefyreDelegate.prototype.viewProfile = function() {
-    window.open(this._serverUrl + '/profile/', '_blank');
+/**
+ * @param {Object} author
+ */
+LivefyreDelegate.prototype.viewProfile = function(author) {
+    window.open(author.profileUrl, '_blank');
 };
 
 LivefyreDelegate.prototype.editProfile = function() {
