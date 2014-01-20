@@ -14,7 +14,8 @@
     "express": "*",
     "mocha": "1.14.0",
     "mocha-phantomjs": "3.1.6",
-    "phantomjs": "*"
+    "phantomjs": "*",
+    "requirejs": "2.1.9"
   },
   "scripts": {
     "build": "./node_modules/requirejs/bin/r.js -o ./build.conf.js",
