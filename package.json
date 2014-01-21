@@ -21,6 +21,6 @@
     "build": "./node_modules/requirejs/bin/r.js -o ./build.conf.js",
     "postinstall": "./node_modules/bower/bin/bower install",
     "start": "node ./server.js",
-    "test": "./bin/test"
+    "test": "./bin/test -R json-cov"
   }
 }
