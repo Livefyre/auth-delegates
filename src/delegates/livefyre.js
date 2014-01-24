@@ -28,7 +28,11 @@ LivefyreDelegate.prototype.login = function() {
 
 LivefyreDelegate.prototype.fetchAuthData = function() {
     if (!user.get('token')) {
-        user.remoteLogin(this.articleId, this.siteId, this.serverUrl);
+        user.remoteLogin({
+            articleId: this.articleId,
+            siteId: this.siteId,
+            serverUrl: this.serverUrl
+        });
     }
 };
 
@@ -79,7 +83,11 @@ LivefyreDelegate.prototype._popup = function(callback) {
     function testResult(callback, popup) {
         if (!isActive(popup)) {
             clearInterval(timeout);
-            user.remoteLogin(articleId, siteId, serverUrl);
+            user.remoteLogin({
+                articleId: articleId,
+                siteId: siteId,
+                serverUrl: serverUrl
+            });
             return;
         }
     }
@@ -108,6 +116,9 @@ LivefyreDelegate.prototype.editProfile = function() {
     window.open(this._serverUrl + '/profile/edit/info/', '_blank');
 };
 
+/**
+ * Clean up any handlers, etc.
+ */
 LivefyreDelegate.prototype.destroy = function() {
     this.articleId = this.siteId = this.serverUrl = null;
     user.removeListener('loginRequested', bind(this.fetchAuthData, this));

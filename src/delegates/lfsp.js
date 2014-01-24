@@ -28,7 +28,11 @@ function LfspDelegate(articleId, siteId, opt_config) {
 
     spObject.on(SP_EVENTS.LOGIN_COMPLETE, function(data) {
         user.login(data['token']);
-        user.remoteLogin(this.articleId, this.siteId, this.serverUrl);
+        user.remoteLogin({
+            articleId: this.articleId,
+            siteId: this.siteId,
+            serverUrl: this.serverUrl
+        });
     }, this);
     spObject.on(SP_EVENTS.LOGOUT_COMPLETE, function() {
         user.logout();
@@ -101,7 +105,7 @@ LfspDelegate.prototype.editProfile = function() {
 };
 
 /**
- * Clean
+ * Clean up any handlers, etc.
  */
 LfspDelegate.prototype.destroy = function() {
     this.spObject.off(null, null, this);

@@ -139,18 +139,21 @@ LivefyreUser.prototype.isMod = function(articleId) {
 };
 
 /**
- * @param {string} articleId
- * @param {string} siteId
- * @param {string=} opt_serverUrl
- * @param {function()=} opt_callback
+ * @param {string} opts.articleId
+ * @param {string} opts.siteId
+ * @param {string=} opts.serverUrl
+ * @param {function()=} opts.callback
  */
-LivefyreUser.prototype.remoteLogin = function(articleId, siteId, opt_serverUrl, opt_callback) {
-    var queryParams = 'articleId=' + articleId + '&siteId=' + siteId,
-        url = (opt_serverUrl || 'http://livefyre.com') + '/api/v3.0/auth/?' + queryParams,
+LivefyreUser.prototype.remoteLogin = function(opts) {
+    // TODO(rrp): uri param helper
+    var queryParams = 'articleId=' + encodeURIComponent(opts.articleId) + '&siteId=' + opts.siteId,
+        url = (opts.serverUrl || 'http://livefyre.com') + '/api/v3.0/auth/?' + queryParams,
         self = this,
-        token = this.get('token');
+        token = this.get('token'),
+        bpChannel = this.get('bpChannel');
 
-    url += token ? '&token=' + token : '';
+    url += token ? '&token=' + encodeURIComponent(token) : '';
+    url += bpChannel ? '&bp_channel=' + encodeURIComponent(bpChannel) : '';
     jsonp.req(url, function(err, resp) {
         if (err || (resp['data'] && !resp['data']['profile'])) {
             return;
@@ -158,9 +161,9 @@ LivefyreUser.prototype.remoteLogin = function(articleId, siteId, opt_serverUrl, 
         var data = resp['data'],
             tokenObj = data['token'],
             ttl = (+new Date()) + tokenObj['ttl'];
-        self.loadSession(data, articleId);
+        self.loadSession(data, opts.articleId);
         storage.set(AUTH_COOKIE_KEY, data, ttl);
-        opt_callback && opt_callback(data);
+        opts.callback && opts.callback(data);
     });
 };
 

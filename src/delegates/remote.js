@@ -12,7 +12,7 @@ var storage = require('auth-delegates/util/storage'),
  */
 function RemoteAuthDelegate() {}
 
-AuthDelegate.prototype.loadSession = function() {
+RemoteAuthDelegate.prototype.loadSession = function() {
     var cookieData = storage.get(AUTH_COOKIE_KEY) || {};
     if (cookieData['token']) {
         user.loadSession(cookieData);
@@ -29,5 +29,10 @@ RemoteAuthDelegate.prototype.logout = function() {
 RemoteAuthDelegate.prototype.login = function() {};
 RemoteAuthDelegate.prototype.viewProfile = function() {};
 RemoteAuthDelegate.prototype.editProfile = function() {};
+
+/**
+ * Clean up any handlers, etc.
+ */
+RemoteAuthDelegate.prototype.destroy = function() {};
 
 module.exports = RemoteAuthDelegate;
