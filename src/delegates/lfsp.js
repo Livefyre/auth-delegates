@@ -87,7 +87,7 @@ LfspDelegate.prototype.viewProfile = function(author) {
 	        return;
 	    }
 	    window.open(author.profileUrl,'authWindow',
-	    	'location=true;menubar=false;resizable=false;scrollbars=false');
+            'location=true;menubar=false;resizable=false;scrollbars=false');
         return;
     }
     if (author.id !== user.id) {

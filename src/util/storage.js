@@ -108,7 +108,7 @@ var cookieStorage = {
      */
     get: function(key) {
         function getParts() {
-            return document.cookie.split(/\s*;\s*/)
+            return document.cookie.split(/\s*;\s*/);
         }
         var keyEq = key + '=',
             parts = getParts();
@@ -117,7 +117,7 @@ var cookieStorage = {
             if (part.lastIndexOf(keyEq, 0) === 0) {
                 return part.substr(keyEq.length);
             }
-            if (part == key) {
+            if (part === key) {
                 return '';
             }
         }

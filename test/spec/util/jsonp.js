@@ -31,7 +31,9 @@ describe('auth-delegates/util/jsonp', function() {
 		jsonp.req(serverEcho + '?data=' + JSON.stringify(data), function(error, response) {
 			// not sure how to do this otherwise
 			for (var prop in window) {
-				chai.assert(prop.indexOf('_lfcallback_') < 0);
+				if (window.hasOwnProperty(prop)) {
+					chai.assert(prop.indexOf('_lfcallback_') < 0);
+				}
 			}
 
 			var scripts = document.getElementsByName('script');

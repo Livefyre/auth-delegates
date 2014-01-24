@@ -52,9 +52,11 @@ LivefyreUser.prototype.set = function(keyOrObj, opt_value) {
     }
 
     for (k in keyOrObj) {
-        val = keyOrObj[k];
-        this._attributes[k] = val;
-        this.emit(LivefyreUser.EVENTS.CHANGE + ':' + k, val);
+        if (keyOrObj.hasOwnProperty(k)) {
+            val = keyOrObj[k];
+            this._attributes[k] = val;
+            this.emit(LivefyreUser.EVENTS.CHANGE + ':' + k, val);
+        }
     }
     this.emit(LivefyreUser.EVENTS.CHANGE, keyOrObj);
 };

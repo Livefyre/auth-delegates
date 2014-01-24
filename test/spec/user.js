@@ -11,67 +11,67 @@ var storage = require('auth-delegates/util/storage'),
 describe('auth-delegates/user', function() {
     describe('is global', function() {
         it('has a fancy namespace', function() {
-            chai.assert(typeof(Livefyre) == 'object');
-            chai.assert(typeof(Livefyre.user) == 'object');
-            chai.assert(typeof(Livefyre.user.login) == 'function');
-            chai.assert(typeof(Livefyre.user.logout) == 'function');
-            chai.assert(typeof(Livefyre.user.on) == 'function');
-            chai.assert(typeof(Livefyre.user.removeListener) == 'function');
+            chai.assert(typeof(Livefyre) === 'object');
+            chai.assert(typeof(Livefyre.user) === 'object');
+            chai.assert(typeof(Livefyre.user.login) === 'function');
+            chai.assert(typeof(Livefyre.user.logout) === 'function');
+            chai.assert(typeof(Livefyre.user.on) === 'function');
+            chai.assert(typeof(Livefyre.user.removeListener) === 'function');
         });
     });
 
     describe('spawns correct events', function() {
-    	it('fires change event', function() {
-    		var changeFired = false;
-    		user.on('change', function() {
-    			changeFired = true;
-    		});
-    		user.set('token', 'abc');
-    		chai.assert(changeFired);
-    	});
-    	it('fires loginRequested event', function() {
-    		var changeFired = false;
-    		user.on('loginRequested', function() {
-    			changeFired = true;
-    		});
-    		user.login('abcdefg');
-    		chai.assert(changeFired)
+        it('fires change event', function() {
+            var changeFired = false;
+            user.on('change', function() {
+                changeFired = true;
+            });
+            user.set('token', 'abc');
+            chai.assert(changeFired);
+        });
+        it('fires loginRequested event', function() {
+            var changeFired = false;
+            user.on('loginRequested', function() {
+                changeFired = true;
+            });
+            user.login('abcdefg');
+            chai.assert(changeFired);
             user.logout();
-    	});
-    	it('fires logout event', function() {
-    		var logout = false;
-    		user.on('logout', function() {
-    			logout = true;
-    		});
-    		user.logout();
-    		chai.assert(logout);
-    	});
+        });
+        it('fires logout event', function() {
+            var logout = false;
+            user.on('logout', function() {
+                logout = true;
+            });
+            user.logout();
+            chai.assert(logout);
+        });
     });
 
     describe('setters/getters/unsetters work', function() {
-    	it('sets and gets string key', function() {
-    		user.set('abc', 'def');
-    		chai.assert(user.get('abc') === 'def');
-    	});
+        it('sets and gets string key', function() {
+            user.set('abc', 'def');
+            chai.assert(user.get('abc') === 'def');
+        });
 
-    	it('sets and gets object', function() {
-    		user.set({
-    			'abc': 'def',
-    			'ghi': 'jkl'
-    		});
-    		chai.assert(user.get('abc') === 'def');
-    		chai.assert(user.get('ghi') === 'jkl');
-    	});
+        it('sets and gets object', function() {
+            user.set({
+                'abc': 'def',
+                'ghi': 'jkl'
+            });
+            chai.assert(user.get('abc') === 'def');
+            chai.assert(user.get('ghi') === 'jkl');
+        });
 
-    	it('unsets key', function() {
-    		user.set('token', 'abc');
-    		user.unset('token');
-    		chai.assert(user.get('token') === undefined);
-    	});
+        it('unsets key', function() {
+            user.set('token', 'abc');
+            user.unset('token');
+            chai.assert(user.get('token') === undefined);
+        });
     });
 
     describe('Login user and logout user correctly', function() {
-    	it('parses profile data', function() {
+        it('parses profile data', function() {
             user.loadSession(sampleProfile, '123');
 
             chai.assert(user.get('id') === '_u696@livefyre.com');
@@ -83,14 +83,14 @@ describe('auth-delegates/user', function() {
             chai.assert(user.get('avatar') === 'http://gravatar.com/avatar/f79fae57457a4204aeb07e92f81019bd/?s=50&d=http://d25bq1kaa0xeba.cloudfront.net/a/anon/50.jpg');
             chai.assert(user.get('token') === sampleProfile['token']['value']);
             user.logout();
-    	});
-    	it('logout clears profile data', function() {
-    		user.set('token', 'abce');
-    		chai.assert(user.get('token'));
+        });
+        it('logout clears profile data', function() {
+            user.set('token', 'abce');
+            chai.assert(user.get('token'));
 
             user.logout();
             chai.assert(user.get('token') === undefined);
-    	});
+        });
     });
 
     describe('Remote login works', function() {
