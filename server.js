@@ -6,7 +6,7 @@ var PORT = 8090;
 var express = require('express');
 var app = express();
 var fs = require('fs');
-var fixturePath = __dirname + '/tests/fixtures';
+var fixturePath = __dirname + '/test/fixtures';
 
 function getFixtureObj(name, callback) {
   fs.readFile(fixturePath + '/' + name + '.json', 'utf8', function (err, data) {

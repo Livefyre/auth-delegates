@@ -17,7 +17,7 @@ function req(url, callback) {
     window[rand] = function(data) {
         clean();
         callback(null, data);
-    }
+    };
 
     script.type = 'text/javascript';
     script.async = true;

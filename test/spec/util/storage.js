@@ -24,6 +24,6 @@ describe('auth-delegates/util/storage', function() {
 		setTimeout(function() {
 			chai.assert.isUndefined(storage.get('abc'));
 			done();
-		}, 300)
+		}, 300);
 	});
 });

@@ -11,6 +11,6 @@ require.config({
   },
   {
     name: 'auth-delegates-tests',
-    location: 'tests'
+    location: 'test'
   }]
 });
