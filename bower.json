@@ -6,7 +6,8 @@
   	"almond": "0.2.6",
     "cajon": "git@github.com:requirejs/cajon.git#~0.1.11",
     "event-emitter": "git://github.com/Livefyre/event-emitter.git",
-    "inherits": "git://github.com/Livefyre/inherits.git"
+    "inherits": "git://github.com/Livefyre/inherits.git",
+    "js-md5": "~1.1.0"
   },
   "dependencies": {}
 }

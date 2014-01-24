@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <script type="text/javascript">
+      if (window.top.CAPTURE) {
+          var cap = window.top.CAPTURE;
+          queryDict = cap.util.queryDict(window.location.search.substring(1));
+          if (queryDict.emailVerified == 'true') {
+              cap.emailVerified();
+          } else {
+              var accessToken = document.location.hash.split('=')[1];
+              cap.createSession(accessToken);
+          }
+      } else {
+          var accessToken = document.location.hash.split('=')[1];
+          'janrainToken', accessToken, (2.0/24.0)
+          var date = new Date(),
+          daysInMS = (2.0/24.0) * 24 * 60 * 60 * 1000;
+          date.setTime(date.getTime() + daysInMS);
+          var expires = '; expires = ' + date.toGMTString();
+          document.cookie = 'janrainToken' + '=' + accessToken + expires + '; path = / ';
+          document.location.href = './capturesite.html';
+      }
+    </script>
+  </body>
+</html>

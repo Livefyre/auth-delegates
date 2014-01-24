@@ -95,21 +95,31 @@ describe('auth-delegates/user', function() {
 
     describe('Remote login works', function() {
         it('Hits "server" and parses profile', function(done) {
-            user.remoteLogin('123', '456', 'http://localhost:8090', function() {
-                chai.assert(user.get('id') === '_u696@livefyre.com');
-                chai.assert(user.isMod('123'));
-                done();
+            user.remoteLogin({
+                    articleId: '123',
+                    siteId: '456',
+                    serverUrl: 'http://localhost:8090',
+                    callback: function() {
+                        chai.assert(user.get('id') === '_u696@livefyre.com');
+                        chai.assert(user.isMod('123'));
+                        done();
+                    }
             });
         });
 
         it('Sets and clear storage', function(done) {
-            user.remoteLogin('123', '456', 'http://localhost:8090', function() {
-                var authData = storage.get('fyre-auth');
-                chai.assert.deepEqual(authData, sampleProfile);
-                user.logout();
-                authData = storage.get('fyre-auth');
-                chai.assert.isUndefined(authData);
-                done();
+            user.remoteLogin({
+                articleId: '123',
+                siteId: '456',
+                serverUrl: 'http://localhost:8090',
+                callback: function() {
+                    var authData = storage.get('fyre-auth');
+                    chai.assert.deepEqual(authData, sampleProfile);
+                    user.logout();
+                    authData = storage.get('fyre-auth');
+                    chai.assert.isUndefined(authData);
+                    done();
+                }
             });
         });
     });

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<!--
+Livefyre setup:
+
+set Domain object json_config['janrain_capture'] = 
+{'base_url': 'https://livefyre.dev.janraincapture.com/',
+ 'client_id': '6xp58xr87t6twcddsjwjvz3t9pzhvcwa',
+ 'client_secret': 'datffkkt8h4q8d2vbgj9xpq6nzdn2m5h',
+ 'enable_push_updates': True,
+ 'identity_url': 'https://livefyre.dev.janraincapture.com/',
+ 'schema_mapping': {'bio': 'aboutMe',
+                    'connections': 'profiles',
+                    'display_name': 'displayName',
+                    'email': 'email',
+                    'id': 'uuid',
+                    'image_url': 'photos',
+                    'location': 'currentLocation'},
+ 'user_type': 'user'}
+
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Backplane 1.2 w/ Janrain Capture Demo</title>
+        <script src="assets/capture.js"></script>
+    </head>
+
+    <body>
+        <script src="http://d134l0cdryxgwa.cloudfront.net/backplane.js" ></script>
+        <script src="https://livefyre.dev.janraincapture.com/cdn/javascripts/capture_client.js"></script>
+
+        <link rel="stylesheet" href="assets/capture-style.css">
+        <script>
+          (function() {
+              if (typeof window.CAPTURE !== 'object') window.CAPTURE = {};
+
+              window.CAPTURE.config = {
+                  // configuration arguments
+                  bp_channel: function() {
+                    return Backplane.getChannelID();
+                  },
+                  capture_ui_server_url: 'https://livefyre.dev.janraincapture.com',
+                  capture_server_url: 'https://livefyre.dev.janraincapture.com', // e.g. https://demo.eval.janraincapture.com/
+                  redirect_uri: 'http://localhost:8090/sample/backplane/oauth-redirect.html',
+                  response_type: 'token',
+                  client_id: '6xp58xr87t6twcddsjwjvz3t9pzhvcwa',
+                  application_id: 'livefyre-dev',
+                  xd_receiver: 'http://localhost:8090/sample/backplane/xdcomm.html',
+                  age_limit_url: 'http://localhost:8090/sample/backplane/unable-to-login.html',
+                  // page event callbacks
+                  callbacks: {
+                      userSignedIn: function () {
+                          var signin = document.getElementById('signin_link')
+                          if (signin){ signin.className = 'hidden'; }
+                          var loggedInNav = document.getElementById('logged_in_nav');
+                          loggedInNav.className = '';
+                          var messageDiv = document.getElementById('message');
+                          if (messageDiv){
+                              var message = CAPTURE.util.getCookie('staticMessage');
+                              if (message) {
+                                  CAPTURE.util.delCookie('staticMessage');
+                              } else {
+                                  message = 'Welcome, thanks for coming<br><a href="profile_image.html">link to profile image sample</a>';
+                              }
+                              messageDiv.innerHTML = message;
+                              messageDiv.style.display = 'block';
+                          }
+                      },
+                      recoverPasswordComplete: function () {
+                          // Show password recovery page here
+                          var passwordFrame = CAPTURE.profilePasswordResetFrame(),
+                          pageContent = document.getElementById('page_content');
+                          savedPage = pageContent.innerHTML;
+                          while (pageContent.firstChild) {
+                              pageContent.removeChild(pageContent.firstChild);
+                          }
+                          pageContent.appendChild(passwordFrame);
+                      },
+                      recoverPasswordStart: function () {
+                          CAPTURE.closeModal()
+                          var messageDiv = document.getElementById('message');
+                          if (messageDiv){
+                              messageDiv.innerHTML = 'Please check your email.';
+                              messageDiv.style.setProperty('display', 'block');
+                          }
+                      },
+                      emailVerified: function () {
+                          var messageDiv = document.getElementById('message');
+                          if (messageDiv){
+                              messageDiv.innerHTML = 'Your email has been verified';
+                              messageDiv.style.setProperty('display', 'block');
+                          }
+
+                      },
+                    userUpdatedData: function () {
+                       CAPTURE.util.setCookie('staticMessage', 'Profile Saved!');
+                       var livefyreUserDomain = window.AI.lfDomain;
+                       var jrTokenMatch = document.cookie.match(/janrainToken=([^;]+)/),
+                           jrToken, lfPushUrl;
+                       if (jrTokenMatch && (jrTokenMatch.length == 2)) {
+                           jrToken = jrTokenMatch[1]
+                       }
+                       if (jrToken) {function empty_callback() {};
+                           var headID = document.getElementsByTagName("head")[0];
+                           var newScript = document.createElement('script');
+                           newScript.type = 'text/javascript';
+                           newScript.src = 'http://' + this.options.config.livefyre_server_url + '/api/v1.1/private/capture/profile_updated/?jrtoken=' + encodeURI(jrToken) + '&callback=empty_callback';
+                           headID.appendChild(newScript);
+                       }
+                       alert('profile saved');
+                       document.getElementById('ssoProfileWrapper').empty().adopt(CAPTURE.profileFrame());
+                    },
+                      sessionExpired: function() {
+                          window.CAPTURE.invalidateSession();
+                          window.location.refresh();
+                      },
+                      captureInitalized: function(CAPTURE) {
+                          queryDict = CAPTURE.util.queryDict(
+                              window.location.search.substring(1));
+                          if (queryDict.email_verified == 'true') {
+                              CAPTURE.emailVerified();
+                          }
+                      }
+                  }
+              };
+          })();
+
+        Backplane(CAPTURE.init);
+        Backplane.init({
+            serverBaseURL: 'https://backplane1.janrainbackplane.com/v1.2',
+            busName: 'livefyre-dev'
+        });
+
+        </script>
+
+        <div id="navigation">
+          <a id="signin_link" href="">Register / Sign In</a>
+
+          <!-- ATTACH SIGNIN LAUNCHER -->
+          <script>
+            document.getElementById('signin_link').onclick = function (event) {
+                CAPTURE.startModalLogin();
+                Backplane.expectMessages('identity/login');
+                return false;
+            };
+          </script>
+
+        <div id="logged_in_nav" class="hidden">
+            <a id="public_profile_link" href="./public_profile.html">View your profile</a> |
+            <a id="profile_link" href="./profile.html">Edit your profile</a> |
+            <a id="logout_link" href="">Logout</a>
+        </div>
+
+          <!-- ATTACH PROFILE LAUNCHER -->
+          <script>
+            document.getElementById('logout_link').onclick = function (event) {
+                CAPTURE.invalidateSession();
+                CAPTURE.util.delCookie('backplane-channel');
+                document.location.reload();
+                return false;
+            };
+          </script>
+          <br/>
+        </div>
+
+        <div id="page">
+          <div class="content" id="page_content">
+            <h1 id="title"></h1>
+            <div id="message" style="color:blue; padding:20px; display:none"></div>
+            <ul class="lipsum">
+              <li>
+                <span>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla id
+                  ipsum nec nunc vulputate porttitor eu in sapien. Nullam et metus
+                  eu diam dignissim sollicitudin. Donec metus dui, dictum non
+                  posuere quis, lacinia et magna. asdf asdf asdf.
+                </span>
+              </li>
+              <li>
+                <span>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla id
+                  ipsum nec nunc vulputate porttitor eu in sapien. Nullam et metus
+                  eu diam dignissim sollicitudin. Donec metus dui, dictum non
+                  posuere quis, lacinia et magna. asdf asdf asdf.
+                </span>
+              </li>
+              <li>
+                <span>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla id
+                  ipsum nec nunc vulputate porttitor eu in sapien. Nullam et metus
+                  eu diam dignissim sollicitudin. Donec metus dui, dictum non
+                  posuere quis, lacinia et magna. asdf asdf asdf.
+                </span>
+              </li>
+            </ul>
+            <div class="clear" style="padding:20px 0"></div>
+          </div>
+        </div>
+
+        <script src="../../lib/cajon/cajon.js"></script>
+        <script src="../../requirejs.conf.js"></script>
+        <script>
+            require([
+                'auth-delegates/delegates/backplane',
+                'auth-delegates/user'
+            ], function(Delegate, user) {
+                var loginEl = document.getElementById('signin_link'),
+                    logoutEl = document.getElementById('logout_link'),
+                    loggedInNav = document.getElementById('logged_in_nav');
+                loggedInNav.style.display = 'none';
+
+                user.on('change', function(attributes) {
+                    console.log('User changed!!!!');
+                });
+
+                user.on('login', function() {
+                    loginEl.style.display = 'none';
+                    loggedInNav.style.display = 'inline';
+                });
+
+                user.on('logout', function() {
+                    loginEl.style.display = 'inline';
+                    loggedInNav.style.display = 'none';
+                });
+
+                // Backplane delegate
+                var authDelegate = new Delegate('NjkzOTg4LjQzNzUzMTUxNg==', '286470',
+                  'http://www.fyre');
+
+                /**
+                 * Login function
+                 * In this case, opens a login modal and triggers Backplane to start listening
+                 * for login messages
+                 */
+                authDelegate.login = function(delegate) {
+                    CAPTURE.startModalLogin();
+                    window.Backplane.expectMessages('identity/login');
+                };
+
+                /**
+                 * Logout function
+                 * In this case, invalidates the session and removes the cookie.
+                 * Also reloads the page to change state. In order to do this without a reload,
+                 * it would be necessary to also update the UI.
+                 */
+                authDelegate.logout = function(delegate) {
+                    CAPTURE.invalidateSession();
+                    CAPTURE.util.delCookie('backplane-channel');
+                    Backplane.resetCookieChannel();
+                    user.logout();
+                };
+
+                /**
+                 * View profile function
+                 * Arguments are delegate parameter and an author parameter
+                 * Used any time a view profile event is triggered
+                 */
+                authDelegate.viewProfile = function(delegate, author) {
+                    console.log(author);
+                };
+
+                /**
+                 * Edit profile function
+                 * Arguments are delegate parameter and an author parameter
+                 * Used any time an edit profile event is triggered
+                 */
+                authDelegate.editProfile = function(delegate, author) {
+                    console.log(author);
+                };
+
+                loginEl.onclick = function(ev) {
+                    ev.preventDefault();
+                    authDelegate.login();
+                };
+                logoutEl.onclick = function(ev) {
+                    ev.preventDefault();
+                    authDelegate.logout();
+                };
+          });
+        </script>
+    </body>
+</html>
+
