@@ -82,7 +82,7 @@ LivefyreUser.prototype.unset = function(key) {
     }
 };
 
-/** 
+/**
  * Clear all attributes back to defaults.
  */
 LivefyreUser.prototype.logout = LivefyreUser.prototype.reset = function() {
@@ -104,13 +104,14 @@ LivefyreUser.prototype.login = function(token) {
 
 /**
  * @param {Object} data
- * @param {sting} articleId
+ * @param {string} articleId
  */
 LivefyreUser.prototype.loadSession = function(data, articleId) {
     var profile = data['profile'],
         permissions = data['permissions'],
         authors = permissions['authors'],
         modKey = permissions['moderator_key'],
+        storedModMap = data['mod_map'],
         tokenObj = data['token'],
         keys = [modKey],
         existingKeys = this.get('keys');
@@ -123,7 +124,11 @@ LivefyreUser.prototype.loadSession = function(data, articleId) {
     this.set(profile);
     this.set('keys', existingKeys.concat(keys));
 
-    if (modKey) {
+    if (storedModMap) {
+        this.set('modMap', storedModMap);
+    }
+
+    if (articleId && modKey) {
         var modMap = this.get('modMap');
         modMap[articleId] = modKey;
         this.set('modMap', modMap);
@@ -164,6 +169,7 @@ LivefyreUser.prototype.remoteLogin = function(opts) {
             tokenObj = data['token'],
             ttl = (+new Date()) + tokenObj['ttl'];
         self.loadSession(data, opts.articleId);
+        data['mod_map'] = self.get('modMap');
         storage.set(AUTH_COOKIE_KEY, data, ttl);
         opts.callback && opts.callback(data);
     });
