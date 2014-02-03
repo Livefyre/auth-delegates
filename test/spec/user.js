@@ -7,6 +7,10 @@ var storage = require('auth-delegates/util/storage'),
     // TODO(rrp): This is already included in ./tests/fixtures/auth.json, so we should probably
     // just use one version.
     sampleProfile = {"profile":{"profileUrl":"admin.fy.re/profile/696/","settingsUrl":"admin.fy.re/profile/edit/info","displayName":"systemowner","avatar":"http://gravatar.com/avatar/f79fae57457a4204aeb07e92f81019bd/?s=50&d=http://d25bq1kaa0xeba.cloudfront.net/a/anon/50.jpg","id":"_u696@livefyre.com"},"token":{"value":"eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJkb21haW4iOiAibGl2ZWZ5cmUuY29tIiwgImV4cGlyZXMiOiAxMzg5NTc0NzIzLjgyODUzOSwgInVzZXJfaWQiOiAiX3U2OTYifQ.wUFdqAPwCOzeuYcHVGdbVdAvdSto6Td65mfDlvDw-iY","ttl":2592000},"version":"__VERSION__","isModAnywhere":true,"permissions":{"moderator_key":"8d565e9925fbd3aaf2e3dc989f4c58ab485574e8","authors":[{"id":"_u696@livefyre.com","key":"cbeee2ca676b7e9641f2c177d880e3ca3ecc295a"}]}};
+    sampleStorage = JSON.parse(JSON.stringify(sampleProfile));
+    sampleStorage['mod_map'] = {
+        '123': sampleProfile['permissions']['moderator_key']
+    };
 
 describe('auth-delegates/user', function() {
     describe('is global', function() {
@@ -91,6 +95,18 @@ describe('auth-delegates/user', function() {
             user.logout();
             chai.assert(user.get('token') === undefined);
         });
+
+        it('uses stored moderator data', function () {
+            user.loadSession(sampleStorage);
+            chai.assert(user.get('modMap')['123']);
+            user.logout();
+        });
+
+        it('does not ingest absent article ids', function () {
+            user.loadSession(sampleProfile);
+            chai.assert(user.get('modMap')['123'] === undefined);
+            user.logout();
+        });
     });
 
     describe('Remote login works', function() {
@@ -114,7 +130,7 @@ describe('auth-delegates/user', function() {
                 serverUrl: 'http://localhost:8090',
                 callback: function() {
                     var authData = storage.get('fyre-auth');
-                    chai.assert.deepEqual(authData, sampleProfile);
+                    chai.assert.deepEqual(authData, sampleStorage);
                     user.logout();
                     authData = storage.get('fyre-auth');
                     chai.assert.isUndefined(authData);
