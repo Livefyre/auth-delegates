@@ -114,7 +114,8 @@ LivefyreUser.prototype.loadSession = function(data, articleId) {
         storedModMap = data['mod_map'],
         tokenObj = data['token'],
         keys = [modKey],
-        existingKeys = this.get('keys');
+        existingKeys = this.get('keys'),
+        collectionId = data['collection_id'];
 
     profile['token'] = tokenObj['value'];
 
@@ -128,11 +129,14 @@ LivefyreUser.prototype.loadSession = function(data, articleId) {
         this.set('modMap', storedModMap);
     }
 
+    var modMap = this.get('modMap');
     if (articleId && modKey) {
-        var modMap = this.get('modMap');
         modMap[articleId] = modKey;
-        this.set('modMap', modMap);
     }
+    if (collectionId && modKey) {
+        modMap[collectionId] = modKey;
+    }
+    this.set('modMap', modMap);
 
     this.emit(LivefyreUser.EVENTS.LOGIN, profile);
 };
