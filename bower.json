@@ -1,9 +1,10 @@
 {
   "name": "auth-delegate-livefyre",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "dist/auth-delegates.min.js",
   "devDependencies": {
   	"almond": "0.2.6",
+    "base64": "git@github.com:ross-pfahler/Base64.js.git#~0.3.2",
     "cajon": "git@github.com:requirejs/cajon.git#~0.1.11",
     "event-emitter": "git://github.com/Livefyre/event-emitter.git",
     "inherits": "git://github.com/Livefyre/inherits.git",

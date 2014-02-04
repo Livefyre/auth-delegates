@@ -2,7 +2,8 @@
  * @fileoverview Backplane auth delegate. Note the differences in implementation between 1.2 and 2.0
  * versions of Backplane.
  */
-var bind = require('auth-delegates/util/bind'),
+var base64 = require('base64'),
+    bind = require('auth-delegates/util/bind'),
     jsonp = require('auth-delegates/util/jsonp'),
     md5 = require('md5'),
 	storage = require('auth-delegates/util/storage'),
@@ -155,7 +156,7 @@ function BackplaneDelegate(articleId, siteId, serverUrl) {
 		throw 'backplane instance must exist';
 	}
 
-    this.articleId = articleId;
+    this.articleId = base64.btoa(articleId);
     this.siteId = siteId;
     this.serverUrl = serverUrl;
 
