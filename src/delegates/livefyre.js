@@ -1,4 +1,5 @@
-var bind = require('auth-delegates/util/bind'),
+var base64 = require('base64'),
+    bind = require('auth-delegates/util/bind'),
     jsonp = require('auth-delegates/util/jsonp'),
     storage = require('auth-delegates/util/storage'),
     user = require('auth-delegates/user'),
@@ -13,7 +14,7 @@ var bind = require('auth-delegates/util/bind'),
  * @constructor
  */
 function LivefyreDelegate(articleId, siteId, serverUrl) {
-    this.articleId = articleId;
+    this.articleId = base64.btoa(articleId);
     this.siteId = siteId;
     this.serverUrl = serverUrl;
     user.on('loginRequested', bind(this.fetchAuthData, this));

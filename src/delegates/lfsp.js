@@ -1,6 +1,7 @@
 /** @fileoverview Livefyre Simple Profiles authentication delegate */
 
-var user = require('../user'),
+var base64 = require('base64'),
+    user = require('../user'),
 	useragent = require('../util/useragent');
 
 /** @enum {string} */
@@ -17,7 +18,7 @@ var SP_EVENTS = {
  * @constructor
  */
 function LfspDelegate(articleId, siteId, opt_config) {
-    this.articleId = articleId;
+    this.articleId = base64.btoa(articleId);
     this.siteId = siteId;
 
 	var config = opt_config || {};
