@@ -142,6 +142,14 @@ LivefyreUser.prototype.loadSession = function(data, articleId) {
 };
 
 /**
+ * Determines if this user is authenticated or not.
+ * @return {boolean}
+ */
+LivefyreUser.prototype.isAuthenticated = function() {
+    return !!this.id;
+};
+
+/**
  * @param {string} collectionId
  * @return {boolean}
  */
