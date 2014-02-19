@@ -146,7 +146,7 @@ LivefyreUser.prototype.loadSession = function(data, articleId) {
  * @return {boolean}
  */
 LivefyreUser.prototype.isAuthenticated = function() {
-    return !!this.id;
+    return !!this.get('id');
 };
 
 /**

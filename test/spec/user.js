@@ -52,6 +52,18 @@ describe('auth-delegates/user', function() {
         });
     });
 
+    describe('isAuthenticated', function() {
+        it('returns true if the user id is set', function() {
+            user.set('id', 'abc');
+            chai.expect(user.isAuthenticated()).to.be.true;
+        });
+
+        it('returns false if the user id is not set', function() {
+            user.set('id', null);
+            chai.expect(user.isAuthenticated()).to.be.false;
+        });
+    });
+
     describe('setters/getters/unsetters work', function() {
         it('sets and gets string key', function() {
             user.set('abc', 'def');
