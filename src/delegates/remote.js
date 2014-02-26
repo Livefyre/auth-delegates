@@ -5,7 +5,8 @@
 
 var bind = require('auth-delegates/util/bind'),
     storage = require('auth-delegates/util/storage'),
-    user = require('auth-delegates/user');
+    user = require('auth-delegates/user'),
+    AUTH_COOKIE_KEY = 'fyre-auth';
 
 /**
  * @param {string} articleId
