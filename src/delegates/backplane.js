@@ -8,7 +8,6 @@ var base64 = require('base64'),
     md5 = require('md5'),
 	storage = require('auth-delegates/util/storage'),
 	user = require('auth-delegates/user'),
-	AUTH_COOKIE_KEY = 'fyre-auth',
     BACKPLANE_CACHE_KEY = 'fyre-backplane-cache',
     BP_MSG_TYPES = {
         LOGIN: 'identity/login',
@@ -199,15 +198,6 @@ BackplaneDelegate.prototype.handleBackplaneMessage = function(message) {
             break;
         default:
             throw 'This Backplane message type is not supported: ' + messageType;
-    }
-};
-
-BackplaneDelegate.prototype.loadSession = function() {
-    var cookieData = storage.get(AUTH_COOKIE_KEY) || {};
-    if (cookieData['token']) {
-        user.loadSession(cookieData);
-    } else {
-        storage.remove(AUTH_COOKIE_KEY);
     }
 };
 

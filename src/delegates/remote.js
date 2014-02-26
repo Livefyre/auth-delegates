@@ -5,8 +5,7 @@
 
 var bind = require('auth-delegates/util/bind'),
     storage = require('auth-delegates/util/storage'),
-    user = require('auth-delegates/user'),
-    AUTH_COOKIE_KEY = 'fyre-auth';
+    user = require('auth-delegates/user');
 
 /**
  * @param {string} articleId
@@ -27,15 +26,6 @@ RemoteAuthDelegate.prototype.fetchAuthData = function() {
       siteId: this.siteId,
       serverUrl: this.serverUrl
   });
-};
-
-RemoteAuthDelegate.prototype.loadSession = function() {
-    var cookieData = storage.get(AUTH_COOKIE_KEY) || {};
-    if (cookieData['token']) {
-        user.loadSession(cookieData);
-    } else {
-        storage.remove(AUTH_COOKIE_KEY);
-    }
 };
 
 RemoteAuthDelegate.prototype.logout = function() {

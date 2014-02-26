@@ -61,11 +61,6 @@ LfspDelegate.prototype.login = function() {
 /**
  * @param {function()} callback
  */
-LfspDelegate.prototype.loadSession = function(callback) {};
-
-/**
- * @param {function()} callback
- */
 LfspDelegate.prototype.logout = function(callback) {
 	this.engageApp.signOut();
 };

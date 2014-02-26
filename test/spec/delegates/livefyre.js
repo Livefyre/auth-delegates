@@ -9,7 +9,6 @@ describe('livefyre.com delegate', function() {
 
 		it('has login, loadSession, and logout handlers', function() {
 			chai.assert.isFunction(LivefyreDelegate.prototype.login);
-			chai.assert.isFunction(LivefyreDelegate.prototype.loadSession);
 			chai.assert.isFunction(LivefyreDelegate.prototype.logout);
 		});
 
