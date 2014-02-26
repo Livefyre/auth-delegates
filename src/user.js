@@ -95,7 +95,7 @@ LivefyreUser.prototype.logout = LivefyreUser.prototype.reset = function() {
 /**
  * Simply sets the token. It is up to the authentication delegates to invoke the "remoteLogin"
  * by listening to "change:token".
- * @param {string) token
+ * @param {string} token
  */
 LivefyreUser.prototype.login = function(token) {
     this.set('token', token);
