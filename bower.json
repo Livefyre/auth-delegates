@@ -1,6 +1,6 @@
 {
   "name": "auth-delegate-livefyre",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "main": "dist/auth-delegates.min.js",
   "devDependencies": {
   	"almond": "0.2.6",
@@ -8,7 +8,8 @@
     "cajon": "git@github.com:requirejs/cajon.git#~0.1.11",
     "event-emitter": "git://github.com/Livefyre/event-emitter.git#~0.0.1",
     "inherits": "git://github.com/Livefyre/inherits.git",
-    "js-md5": "~1.1.0"
+    "js-md5": "~1.1.0",
+    "sinonjs": "~1.7.3"
   },
   "dependencies": {}
 }
