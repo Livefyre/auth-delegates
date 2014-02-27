@@ -187,6 +187,15 @@ LivefyreUser.prototype.remoteLogin = function(opts) {
     });
 };
 
+LivefyreUser.prototype.restoreSession = function() {
+    var cookieData = storage.get(AUTH_COOKIE_KEY) || {};
+    if (cookieData['token']) {
+        this.loadSession(cookieData);
+    } else {
+        storage.remove(AUTH_COOKIE_KEY);
+    }
+};
+
 /**
  * Set up global livefyre user object.
  */

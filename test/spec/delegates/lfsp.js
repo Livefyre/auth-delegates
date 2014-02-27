@@ -20,7 +20,6 @@ describe('lfsp delegate', function() {
 
 		it('has login, loadSession, and logout handlers', function() {
 			chai.assert.isFunction(LfspDelegate.prototype.login);
-			chai.assert.isFunction(LfspDelegate.prototype.loadSession);
 			chai.assert.isFunction(LfspDelegate.prototype.logout);
 		});
 

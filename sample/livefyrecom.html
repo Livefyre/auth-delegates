@@ -36,7 +36,8 @@
                 logoutEl.onclick = function() {
                     d.logout();
                 };
-                d.loadSession();
+
+                Livefyre.user.restoreSession();
             });
         </script>
     </head>

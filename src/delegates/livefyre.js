@@ -1,11 +1,9 @@
 var base64 = require('base64'),
     bind = require('auth-delegates/util/bind'),
     jsonp = require('auth-delegates/util/jsonp'),
-    storage = require('auth-delegates/util/storage'),
     user = require('auth-delegates/user'),
     userAgent = navigator.userAgent,
-    IS_OPERA = userAgent.indexOf('Opera') > -1,
-    AUTH_COOKIE_KEY = 'fyre-auth';
+    IS_OPERA = userAgent.indexOf('Opera') > -1;
 
 /**
  * @param {string} articleId
@@ -34,18 +32,6 @@ LivefyreDelegate.prototype.fetchAuthData = function() {
             siteId: this.siteId,
             serverUrl: this.serverUrl
         });
-    }
-};
-
-/**
- * mmmmcookies
- */
-LivefyreDelegate.prototype.loadSession = function() {
-    var cookieData = storage.get(AUTH_COOKIE_KEY) || {};
-    if (cookieData['token']) {
-        user.loadSession(cookieData);
-    } else {
-        storage.remove(AUTH_COOKIE_KEY);
     }
 };
 

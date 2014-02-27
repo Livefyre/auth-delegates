@@ -151,5 +151,30 @@ describe('auth-delegates/user', function() {
                 }
             });
         });
+
+        it('Restores session', function(done) {
+            user.remoteLogin({
+                articleId: '123',
+                siteId: '456',
+                serverUrl: 'http://localhost:8090',
+                callback: function() {
+                    var authData = storage.get('fyre-auth');
+                    chai.assert.deepEqual(authData, sampleStorage);
+
+                    // Clear data to defaults, and restore from storage.
+                    user.set({
+                        'modMap': {},
+                        'keys': [],
+                    });
+                    user.unset('id');
+                    user.unset('token');
+                    user.unset('displayName');
+                    chai.assert(!user.isAuthenticated());
+                    user.restoreSession();
+                    chai.assert(user.isAuthenticated());
+                    done();
+                }
+            });
+        });
     });
 });
