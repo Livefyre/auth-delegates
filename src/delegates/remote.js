@@ -34,8 +34,14 @@ RemoteAuthDelegate.prototype.logout = function() {
 
 // To be implemented by user
 RemoteAuthDelegate.prototype.login = function() {};
-RemoteAuthDelegate.prototype.viewProfile = function() {};
 RemoteAuthDelegate.prototype.editProfile = function() {};
+
+/**
+ * @param {Object} author
+ */
+RemoteAuthDelegate.prototype.viewProfile = function(author) {
+  author.profileUrl && window.open(author.profileUrl, '_blank');
+};
 
 /**
  * Clean up any handlers, etc.
