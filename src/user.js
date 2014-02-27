@@ -138,7 +138,7 @@ LivefyreUser.prototype.loadSession = function(data, articleId) {
     }
     this.set('modMap', modMap);
 
-    this.emit(LivefyreUser.EVENTS.LOGIN, profile);
+    this.emit(LivefyreUser.EVENTS.LOGIN, data);
 };
 
 /**
