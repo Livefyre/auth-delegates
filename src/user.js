@@ -179,7 +179,7 @@ LivefyreUser.prototype.remoteLogin = function(opts) {
         }
         var data = resp['data'],
             tokenObj = data['token'],
-            ttl = (+new Date()) + tokenObj['ttl'];
+            ttl = (+new Date()) + tokenObj['ttl'] * 1000;
         self.loadSession(data, opts.articleId);
         data['mod_map'] = self.get('modMap');
         storage.set(AUTH_COOKIE_KEY, data, ttl);
