@@ -171,7 +171,7 @@ LivefyreUser.prototype.remoteLogin = function(opts) {
         token = this.get('token'),
         bpChannel = this.get('bpChannel');
 
-    url += token ? '&token=' + encodeURIComponent(token) : '';
+    url += token ? '&lftoken=' + encodeURIComponent(token) : '';
     url += bpChannel ? '&bp_channel=' + encodeURIComponent(bpChannel) : '';
     jsonp.req(url, function(err, resp) {
         if (err || (resp['data'] && !resp['data']['profile'])) {
