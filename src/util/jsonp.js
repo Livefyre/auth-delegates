@@ -11,7 +11,7 @@ function req(url, callback) {
         if (script.parentNode) {
             script.parentNode.removeChild(script);
         }
-        delete window[rand];
+        window[rand] = undefined;
     }
 
     window[rand] = function(data) {
