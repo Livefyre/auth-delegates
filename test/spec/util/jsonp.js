@@ -32,7 +32,9 @@ describe('auth-delegates/util/jsonp', function() {
 			// not sure how to do this otherwise
 			for (var prop in window) {
 				if (window.hasOwnProperty(prop)) {
-					chai.assert(prop.indexOf('_lfcallback_') < 0);
+                    if (prop.indexOf('_lfcallback_') > -1) {
+                        chai.expect(window[prop]).to.be.undefined;
+                    }
 				}
 			}
 

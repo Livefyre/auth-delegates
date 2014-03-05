@@ -1,6 +1,6 @@
 {
   "name": "auth-delegate-livefyre",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "main": "dist/auth-delegates.min.js",
   "devDependencies": {
   	"almond": "0.2.6",
