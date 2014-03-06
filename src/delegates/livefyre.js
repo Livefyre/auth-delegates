@@ -108,7 +108,7 @@ LivefyreDelegate.prototype.editProfile = function() {
 LivefyreDelegate.prototype.restoreSession = function() {
     var cookieData = storage.get(AUTH_COOKIE_KEY) || {};
     if (cookieData['token']) {
-        user.loadSession(cookieData);
+        user.loadSession(cookieData, this.articleId);
     } else {
         storage.remove(AUTH_COOKIE_KEY);
     }

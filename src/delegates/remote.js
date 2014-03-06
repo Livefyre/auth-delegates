@@ -54,7 +54,7 @@ RemoteAuthDelegate.prototype.viewProfile = function(author) {
 
 RemoteAuthDelegate.prototype.restoreSession = function() {
   var cookieData = storage.get(AUTH_COOKIE_KEY) || {};
-  var creds = storage.get(AUTH_CREDS) || {};
+  var creds = storage.get(AUTH_CREDS) || '';
   var token = user.get('token');
 
   if (cookieData['token'] && creds === token) {
