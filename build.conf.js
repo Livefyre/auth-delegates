@@ -5,27 +5,20 @@
   },
   baseUrl: '.',
   name: 'auth-delegates',
-  include: [
-    'almond'
-  ],
-  stubModules: ['text', 'hgn', 'json'],
-  out: "dist/auth-delegates.min.js",
-  namespace: 'Livefyre',
-  pragmasOnSave: {},
-  cjsTranslate: true,
-  optimize: "none",
+  include: ['almond'],
+  out: 'dist/auth-delegates.min.js',
   preserveLicenseComments: false,
+  optimize: 'uglify2',
+  cjsTranslate: true,
   uglify2: {
     compress: {
       unsafe: true
     },
     mangle: true
   },
-  generateSourceMaps: true,
-  onBuildRead: function(moduleName, path, contents) {
-    if (moduleName == "jquery") {
-      contents = "define([], function(require, exports, module) {" + contents + "});";
-    }
-    return contents;
-  }
+  wrap: {
+    startFile: 'tools/wrap-start.frag',
+    endFile: 'tools/wrap-end.frag'
+  },
+  generateSourceMaps: true
 })

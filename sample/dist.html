@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Livefyre.com Auth Sample</title>
+        <script src="../dist/auth-delegates.min.js"></script>
+    </head>
+    <body>
+        <h1>Livefyre.com Auth Sample</h1>
+        <a href="#" id="login">Login</a>
+        <span id="userinfo"></span>
+        <a href="#" id="logout">Logout</a>
+
+        <script>
+            var loginEl = document.getElementById('login'),
+                logoutEl = document.getElementById('logout');
+            logoutEl.style.display = 'none';
+
+            var user = Livefyre.user;
+            user.on('change', function(attributes) {
+                console.log('User changed!!!!');
+            });
+
+            user.on('login', function() {
+                loginEl.style.display = 'none';
+                logoutEl.style.display = 'inline';
+            });
+
+            user.on('logout', function() {
+                loginEl.style.display = 'inline';
+                logoutEl.style.display = 'none';
+            });
+
+            // Livefyre.com delegate
+            var d = new Livefyre.authDelegates.Livefyre('693988.437531517', '286470', 'http://www.fyre');
+            loginEl.onclick = function() {
+                d.login();
+            };
+            logoutEl.onclick = function() {
+                d.logout();
+            };
+
+            d.restoreSession();
+        </script>
+    </body>
+</html>

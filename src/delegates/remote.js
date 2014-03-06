@@ -3,9 +3,12 @@
  * of auth for Livefyre.
  */
 
-var bind = require('auth-delegates/util/bind'),
+var base64 = require('base64'),
+    bind = require('auth-delegates/util/bind'),
     storage = require('auth-delegates/util/storage'),
-    user = require('auth-delegates/user');
+    user = require('auth-delegates/user'),
+    AUTH_COOKIE_KEY = 'fyre-auth',
+    AUTH_CREDS = 'fyre-authentication-creds';
 
 /**
  * @param {string} articleId
@@ -14,13 +17,19 @@ var bind = require('auth-delegates/util/bind'),
  * @constructor
  */
 function RemoteAuthDelegate(articleId, siteId, serverUrl) {
-  this.articleId = articleId;
+  this.articleId = base64.btoa(articleId);
   this.siteId = siteId;
   this.serverUrl = serverUrl;
   user.on('loginRequested', bind(this.fetchAuthData, this));
 }
 
 RemoteAuthDelegate.prototype.fetchAuthData = function() {
+  this.restoreSession();
+
+  if (user.isAuthenticated()) {
+    return;
+  }
+
   user.remoteLogin({
       articleId: this.articleId,
       siteId: this.siteId,
@@ -41,6 +50,18 @@ RemoteAuthDelegate.prototype.editProfile = function() {};
  */
 RemoteAuthDelegate.prototype.viewProfile = function(author) {
   author.profileUrl && window.open(author.profileUrl, '_blank');
+};
+
+RemoteAuthDelegate.prototype.restoreSession = function() {
+  var cookieData = storage.get(AUTH_COOKIE_KEY) || {};
+  var creds = storage.get(AUTH_CREDS) || '';
+  var token = user.get('token');
+
+  if (cookieData['token'] && creds === token) {
+      user.loadSession(cookieData);
+  } else {
+      storage.remove(AUTH_COOKIE_KEY);
+  }
 };
 
 /**

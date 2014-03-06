@@ -231,6 +231,7 @@ BackplaneDelegate.prototype.logout = function() {
 BackplaneDelegate.prototype.login = function() {};
 BackplaneDelegate.prototype.viewProfile = function() {};
 BackplaneDelegate.prototype.editProfile = function() {};
+BackplaneDelegate.prototype.restoreSession = function() {};
 
 /**
  * Clean up any handlers, etc.

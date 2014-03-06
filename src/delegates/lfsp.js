@@ -100,6 +100,8 @@ LfspDelegate.prototype.editProfile = function() {
 	this.profileApp.editProfile();
 };
 
+LfspDelegate.prototype.restoreSession = function() {};
+
 /**
  * Clean up any handlers, etc.
  */

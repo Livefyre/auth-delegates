@@ -10,7 +10,8 @@ var EventEmitter = require('event-emitter'),
     inherits = require('inherits'),
     jsonp = require('auth-delegates/util/jsonp'),
     storage = require('auth-delegates/util/storage'),
-    AUTH_COOKIE_KEY = 'fyre-auth';
+    AUTH_COOKIE_KEY = 'fyre-auth',
+    AUTH_CREDS = 'fyre-authentication-creds';
 
 /**
  * @param {Object} initialAttr
@@ -89,6 +90,7 @@ LivefyreUser.prototype.logout = LivefyreUser.prototype.reset = function() {
     this._attributes = {};
     this.set(LivefyreUser.getDefaults());
     storage.remove(AUTH_COOKIE_KEY);
+    storage.remove(AUTH_CREDS);
     this.emit(LivefyreUser.EVENTS.LOGOUT);
 };
 
@@ -183,22 +185,18 @@ LivefyreUser.prototype.remoteLogin = function(opts) {
         self.loadSession(data, opts.articleId);
         data['mod_map'] = self.get('modMap');
         storage.set(AUTH_COOKIE_KEY, data, ttl);
+
+        // Store authentication credentials, i.e. the token used for authenticating
+        var authCreds = data['auth_token'];
+        if (authCreds) {
+            storage.set(AUTH_CREDS, authCreds['value'], (+new Date()) + authCreds['ttl'] * 1000);
+        }
+
         opts.callback && opts.callback(data);
     });
 };
 
-LivefyreUser.prototype.restoreSession = function() {
-    var cookieData = storage.get(AUTH_COOKIE_KEY) || {};
-    if (cookieData['token']) {
-        this.loadSession(cookieData);
-    } else {
-        storage.remove(AUTH_COOKIE_KEY);
-    }
-};
-
 /**
- * Set up global livefyre user object.
+ * Set up singleton user object.
  */
-window.Livefyre = window.Livefyre || {};
-window.Livefyre.user = window.Livefyre.user || new LivefyreUser();
-module.exports = window.Livefyre.user;
+module.exports = new LivefyreUser();

@@ -21,6 +21,7 @@ describe('lfsp delegate', function() {
 		it('has login, loadSession, and logout handlers', function() {
 			chai.assert.isFunction(LfspDelegate.prototype.login);
 			chai.assert.isFunction(LfspDelegate.prototype.logout);
+			chai.assert.isFunction(LfspDelegate.prototype.restoreSession);
 		});
 
 		it('is constructable and destroyable', function() {

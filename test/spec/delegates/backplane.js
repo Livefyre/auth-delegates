@@ -15,6 +15,7 @@ describe('livefyre.com delegate', function() {
 		it('has login, loadSession, and logout handlers', function() {
 			chai.assert.isFunction(BackplaneDelegate.prototype.login);
 			chai.assert.isFunction(BackplaneDelegate.prototype.logout);
+			chai.assert.isFunction(BackplaneDelegate.prototype.restoreSession);
 		});
 
 		it('is constructable and destroyable', function() {
