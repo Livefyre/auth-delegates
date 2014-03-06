@@ -5,19 +5,20 @@
   },
   baseUrl: '.',
   name: 'auth-delegates',
-  include: [
-    'almond'
-  ],
+  include: ['almond'],
   out: "dist/auth-delegates.min.js",
-  namespace: 'Livefyre',
-  pragmasOnSave: {},
-  cjsTranslate: true,
   preserveLicenseComments: false,
+  optimize: 'uglify2',
+  cjsTranslate: true,
   uglify2: {
     compress: {
       unsafe: true
     },
     mangle: true
+  },
+  wrap: {
+    startFile: 'tools/wrap-start.frag',
+    endFile: 'tools/wrap-end.frag'
   },
   generateSourceMaps: true,
   onBuildRead: function(moduleName, path, contents) {
