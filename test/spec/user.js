@@ -15,12 +15,11 @@ var storage = require('auth-delegates/util/storage'),
 describe('auth-delegates/user', function() {
     describe('is global', function() {
         it('has a fancy namespace', function() {
-            chai.assert(typeof(Livefyre) === 'object');
-            chai.assert(typeof(Livefyre.user) === 'object');
-            chai.assert(typeof(Livefyre.user.login) === 'function');
-            chai.assert(typeof(Livefyre.user.logout) === 'function');
-            chai.assert(typeof(Livefyre.user.on) === 'function');
-            chai.assert(typeof(Livefyre.user.removeListener) === 'function');
+            chai.assert(typeof(user) === 'object');
+            chai.assert(typeof(user.login) === 'function');
+            chai.assert(typeof(user.logout) === 'function');
+            chai.assert(typeof(user.on) === 'function');
+            chai.assert(typeof(user.removeListener) === 'function');
         });
     });
 
