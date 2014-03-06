@@ -8,12 +8,10 @@
   include: [
     'almond'
   ],
-  stubModules: ['text', 'hgn', 'json'],
   out: "dist/auth-delegates.min.js",
   namespace: 'Livefyre',
   pragmasOnSave: {},
   cjsTranslate: true,
-  optimize: "none",
   preserveLicenseComments: false,
   uglify2: {
     compress: {
