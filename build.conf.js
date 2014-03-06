@@ -6,7 +6,7 @@
   baseUrl: '.',
   name: 'auth-delegates',
   include: ['almond'],
-  out: "dist/auth-delegates.min.js",
+  out: 'dist/auth-delegates.min.js',
   preserveLicenseComments: false,
   optimize: 'uglify2',
   cjsTranslate: true,
@@ -20,11 +20,5 @@
     startFile: 'tools/wrap-start.frag',
     endFile: 'tools/wrap-end.frag'
   },
-  generateSourceMaps: true,
-  onBuildRead: function(moduleName, path, contents) {
-    if (moduleName == "jquery") {
-      contents = "define([], function(require, exports, module) {" + contents + "});";
-    }
-    return contents;
-  }
+  generateSourceMaps: true
 })
