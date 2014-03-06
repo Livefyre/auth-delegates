@@ -17,7 +17,7 @@ var SP_EVENTS = {
  * @param {Object=} opt_config Configuration options
  * @constructor
  */
-function LfspDelegate(articleId, siteId, opt_config) {
+function LfepDelegate(articleId, siteId, opt_config) {
     this.articleId = base64.btoa(articleId);
     this.siteId = siteId;
 
@@ -43,7 +43,7 @@ function LfspDelegate(articleId, siteId, opt_config) {
 /**
  *
  */
-LfspDelegate.prototype.login = function() {
+LfepDelegate.prototype.login = function() {
     function success(data) {
         user.login(data['token']);
         this.spObject.off(SP_EVENTS.LOGIN_COMPLETE, success);
@@ -61,16 +61,16 @@ LfspDelegate.prototype.login = function() {
 /**
  * @param {function()} callback
  */
-LfspDelegate.prototype.logout = function(callback) {
+LfepDelegate.prototype.logout = function(callback) {
 	this.engageApp.signOut();
 };
 
 /**
- * It really seems like the lfsp profiles app should take care of most of this
+ * It really seems like the lfep profiles app should take care of most of this
  * stuff.
  * @param {Object} author
  */
-LfspDelegate.prototype.viewProfile = function(author) {
+LfepDelegate.prototype.viewProfile = function(author) {
     var id, profileUrl;
     
     if (author.isCuratedAuthor) {
@@ -94,18 +94,18 @@ LfspDelegate.prototype.viewProfile = function(author) {
 };
 
 /**
- * Launch edit profile from lfsp.
+ * Launch edit profile from lfep.
  */
-LfspDelegate.prototype.editProfile = function() {
+LfepDelegate.prototype.editProfile = function() {
 	this.profileApp.editProfile();
 };
 
-LfspDelegate.prototype.restoreSession = function() {};
+LfepDelegate.prototype.restoreSession = function() {};
 
 /**
  * Clean up any handlers, etc.
  */
-LfspDelegate.prototype.destroy = function() {
+LfepDelegate.prototype.destroy = function() {
     this.spObject.off(null, null, this);
     this.articleId =
         this.siteId =
@@ -114,4 +114,4 @@ LfspDelegate.prototype.destroy = function() {
         this.engageApp = null;
 };
 
-module.exports = LfspDelegate;
+module.exports = LfepDelegate;

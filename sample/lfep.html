@@ -1,13 +1,13 @@
 <!doctype html>
 <html>
     <head>
-        <title>LFSP Auth Sample</title>
+        <title>LFEP Auth Sample</title>
         <script src="https://profiles-0.qa-ext.livefyre.com/media/cHJvZmlsZXMtMC5xYS1leHQubGl2ZWZ5cmUuY29t/javascripts/customprofiles.js"></script> 
         <script src="../lib/cajon/cajon.js"></script>
         <script src="../requirejs.conf.js"></script>
         <script>
             require([
-                'auth-delegates/delegates/lfsp',
+                'auth-delegates/delegates/lfep',
                 'auth-delegates/user'
             ], function(Delegate, user) {
                 var loginEl = document.getElementById('login'),
@@ -28,7 +28,7 @@
                     logoutEl.style.display = 'none';
                 });
 
-                // Lfsp delegate
+                // Lfep delegate
                 var d = new Delegate('NjkzOTg4LjQzNzUzMTUxNg==', '286470', {
                 	engageOpts: {
                 		app: 'livefyre-dev'
@@ -48,7 +48,7 @@
         </script>
     </head>
     <body>
-        <h1>LFSP Auth Sample</h1>
+        <h1>LFEP Auth Sample</h1>
         <a href="#" id="login">Login</a>
         <span id="userinfo"></span>
         <a href="#" id="logout">Logout</a>
