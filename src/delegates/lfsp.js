@@ -15,11 +15,13 @@ var SP_EVENTS = {
  * @param {string} articleId
  * @param {string} siteId
  * @param {Object=} opt_config Configuration options
+ * @param {string=} opt_serverUrl
  * @constructor
  */
 function LfspDelegate(articleId, siteId, opt_config) {
     this.articleId = base64.btoa(articleId);
     this.siteId = siteId;
+    this.serverUrl = opt_serverUrl;
 
 	var config = opt_config || {};
 
