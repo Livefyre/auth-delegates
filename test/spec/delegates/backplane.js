@@ -12,7 +12,7 @@ describe('livefyre.com delegate', function() {
 			chai.assert.isFunction(BackplaneDelegate.prototype.editProfile);
 		});
 
-		it('has login, loadSession, and logout handlers', function() {
+		it('has login, restoreSession, and logout handlers', function() {
 			chai.assert.isFunction(BackplaneDelegate.prototype.login);
 			chai.assert.isFunction(BackplaneDelegate.prototype.logout);
 			chai.assert.isFunction(BackplaneDelegate.prototype.restoreSession);

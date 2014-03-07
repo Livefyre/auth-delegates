@@ -207,7 +207,7 @@ set Domain object json_config['janrain_capture'] =
                 var loginEl = document.getElementById('signin_link'),
                     logoutEl = document.getElementById('logout_link'),
                     loggedInNav = document.getElementById('logged_in_nav');
-                loggedInNav.style.display = 'none';
+                //loggedInNav.style.display = 'none';
 
                 user.on('change', function(attributes) {
                     console.log('User changed!!!!');
@@ -277,6 +277,8 @@ set Domain object json_config['janrain_capture'] =
                     authDelegate.logout();
                 };
           });
+
+          
         </script>
     </body>
 </html>

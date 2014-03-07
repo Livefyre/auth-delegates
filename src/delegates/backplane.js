@@ -183,7 +183,7 @@ BackplaneDelegate.prototype.handleBackplaneMessage = function(message) {
     switch (messageType) {
         case BP_MSG_TYPES.LOGIN:
             if (cache.has(message)) {
-                this.loadSession();
+                this.restoreSession();
                 break;
             }
             cache.set(message);
