@@ -18,7 +18,7 @@ var SP_EVENTS = {
  * @param {string=} opt_serverUrl
  * @constructor
  */
-function LfspDelegate(articleId, siteId, opt_config) {
+function LfspDelegate(articleId, siteId, opt_config, opt_serverUrl) {
     this.articleId = base64.btoa(articleId);
     this.siteId = siteId;
     this.serverUrl = opt_serverUrl;
