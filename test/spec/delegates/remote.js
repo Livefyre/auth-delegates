@@ -10,7 +10,7 @@ describe('remote delegate', function() {
             chai.assert.isFunction(RemoteDelegate.prototype.editProfile);
         });
 
-        it('has login, loadSession, and logout handlers', function() {
+        it('has login, restoreSession, and logout handlers', function() {
             chai.assert.isFunction(RemoteDelegate.prototype.login);
             chai.assert.isFunction(RemoteDelegate.prototype.logout);
             chai.assert.isFunction(RemoteDelegate.prototype.restoreSession);

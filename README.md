@@ -19,4 +19,4 @@ All auth delegate objects need to provide the following functions:
   - logout
   - viewProfile
   - editProfile
-  - loadSession (optional)
+  - restoreSession (optional)
