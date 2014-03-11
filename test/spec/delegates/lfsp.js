@@ -1,4 +1,5 @@
 var LfspDelegate = require('auth-delegates/delegates/lfsp');
+var LivefyreUser = require('auth-delegates/user');
 
 window.fyre = {
 	sp: {
@@ -22,6 +23,15 @@ describe('lfsp delegate', function() {
 			chai.assert.isFunction(LfspDelegate.prototype.login);
 			chai.assert.isFunction(LfspDelegate.prototype.logout);
 			chai.assert.isFunction(LfspDelegate.prototype.restoreSession);
+		});
+
+		it('has getUser and user', function() {
+			chai.assert.isFunction(LfspDelegate.prototype.getUser);
+			chai.assert.equal(LfspDelegate.prototype.user, LivefyreUser);
+
+			var delegate = new LfspDelegate('abc', 'def');
+			chai.assert.equal(delegate.getUser(), LivefyreUser);
+			delegate.destroy();
 		});
 
 		it('is constructable and destroyable', function() {

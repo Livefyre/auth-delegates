@@ -1,3 +1,4 @@
+var LivefyreUser = require('auth-delegates/user');
 var RemoteDelegate = require('auth-delegates/delegates/remote');
 var storage = require('auth-delegates/util/storage');
 var user = require('auth-delegates/user');
@@ -22,6 +23,15 @@ describe('remote delegate', function() {
             delegate.destroy();
         });
     });
+
+    it('has getUser and user', function() {
+      chai.assert.isFunction(RemoteDelegate.prototype.getUser);
+      chai.assert.equal(RemoteDelegate.prototype.user, LivefyreUser);
+
+      var delegate = new RemoteDelegate('abc', 'def');
+      chai.assert.equal(delegate.getUser(), LivefyreUser);
+      delegate.destroy();
+    });    
 
     describe('viewProfile', function() {
         it('triggers a window.open by default to the profile url', function(done) {

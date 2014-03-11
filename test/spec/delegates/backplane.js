@@ -1,4 +1,5 @@
 var BackplaneDelegate = require('auth-delegates/delegates/backplane');
+var LivefyreUser = require('auth-delegates/user');
 
 describe('livefyre.com delegate', function() {
 	before(function() {
@@ -16,6 +17,15 @@ describe('livefyre.com delegate', function() {
 			chai.assert.isFunction(BackplaneDelegate.prototype.login);
 			chai.assert.isFunction(BackplaneDelegate.prototype.logout);
 			chai.assert.isFunction(BackplaneDelegate.prototype.restoreSession);
+		});
+
+		it('has getUser and user', function() {
+			chai.assert.isFunction(BackplaneDelegate.prototype.getUser);
+			chai.assert.equal(BackplaneDelegate.prototype.user, LivefyreUser);
+
+			var delegate = new BackplaneDelegate('abc', 'def');
+			chai.assert.equal(delegate.getUser(), LivefyreUser);
+			delegate.destroy();
 		});
 
 		it('is constructable and destroyable', function() {
