@@ -68,6 +68,9 @@ LivefyreUser.prototype.set = function(keyOrObj, opt_value) {
  * @return {*}
  */
 LivefyreUser.prototype.get = function(key) {
+    if (!key) {
+        return this._attributes;
+    }
     return this._attributes[key];
 };
 

@@ -76,6 +76,12 @@ describe('auth-delegates/user', function() {
             });
             chai.assert(user.get('abc') === 'def');
             chai.assert(user.get('ghi') === 'jkl');
+
+            var allAttr = user.get();
+            chai.assert.equal(allAttr['abc'], 'def');
+            chai.assert.equal(allAttr['ghi'], 'jkl');
+            chai.assert(allAttr.modMap);
+            chai.assert.equal(allAttr.keys.length, 0);
         });
 
         it('unsets key', function() {
