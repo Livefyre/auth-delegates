@@ -1,7 +1,7 @@
 var BackplaneDelegate = require('auth-delegates/delegates/backplane');
 var LivefyreUser = require('auth-delegates/user');
 
-describe('livefyre.com delegate', function() {
+describe('backplane delegate', function() {
 	before(function() {
 		window.Backplane = function() {};
 		window.Backplane.version = "2.0.6";
@@ -21,7 +21,8 @@ describe('livefyre.com delegate', function() {
 
 		it('has getUser and user', function() {
 			chai.assert.isFunction(BackplaneDelegate.prototype.getUser);
-			chai.assert.equal(BackplaneDelegate.prototype.user, LivefyreUser);
+			chai.assert.isFunction(BackplaneDelegate.prototype.setUser);
+			chai.assert.equal(BackplaneDelegate.prototype._user, LivefyreUser);
 
 			var delegate = new BackplaneDelegate('abc', 'def');
 			chai.assert.equal(delegate.getUser(), LivefyreUser);

@@ -19,7 +19,8 @@ describe('livefyre.com delegate', function() {
 
     it('has getUser and user', function() {
       chai.assert.isFunction(LivefyreDelegate.prototype.getUser);
-      chai.assert.equal(LivefyreDelegate.prototype.user, LivefyreUser);
+      chai.assert.isFunction(LivefyreDelegate.prototype.setUser);
+      chai.assert.equal(LivefyreDelegate.prototype._user, LivefyreUser);
 
       var delegate = new LivefyreDelegate('abc', 'def');
       chai.assert.equal(delegate.getUser(), LivefyreUser);

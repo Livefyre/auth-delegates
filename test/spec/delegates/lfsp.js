@@ -27,7 +27,8 @@ describe('lfsp delegate', function() {
 
 		it('has getUser and user', function() {
 			chai.assert.isFunction(LfspDelegate.prototype.getUser);
-			chai.assert.equal(LfspDelegate.prototype.user, LivefyreUser);
+			chai.assert.isFunction(LfspDelegate.prototype.setUser);
+			chai.assert.equal(LfspDelegate.prototype._user, LivefyreUser);
 
 			var delegate = new LfspDelegate('abc', 'def');
 			chai.assert.equal(delegate.getUser(), LivefyreUser);

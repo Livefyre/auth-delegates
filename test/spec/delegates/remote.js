@@ -24,9 +24,10 @@ describe('remote delegate', function() {
         });
     });
 
-    it('has getUser and user', function() {
+    it('has getUser and setUser', function() {
       chai.assert.isFunction(RemoteDelegate.prototype.getUser);
-      chai.assert.equal(RemoteDelegate.prototype.user, LivefyreUser);
+      chai.assert.isFunction(RemoteDelegate.prototype.setUser);
+      chai.assert.equal(RemoteDelegate.prototype._user, LivefyreUser);
 
       var delegate = new RemoteDelegate('abc', 'def');
       chai.assert.equal(delegate.getUser(), LivefyreUser);

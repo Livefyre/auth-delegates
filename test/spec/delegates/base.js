@@ -1,6 +1,5 @@
 var BaseDelegate = require('auth-delegates/delegates/base');
 var LivefyreUser = require('auth-delegates/user');
-var inherits = require('inherits');
 
 describe('base delegate', function() {
   it('maintains the correct interface', function() {
@@ -13,18 +12,18 @@ describe('base delegate', function() {
 
   it('has a get user function and user is overridable on the prototype', function() {
     chai.assert.isFunction(BaseDelegate.prototype.getUser);
-    chai.assert.equal(BaseDelegate.prototype.user, LivefyreUser);
+    chai.assert.equal(BaseDelegate.prototype._user, LivefyreUser);
 
     var delegate = new BaseDelegate();
     chai.assert.equal(delegate.getUser(), LivefyreUser);
 
     var user = {'some': 'user'};
-    var CustomDelegate = function() {
-      this.user = user;
-    };
-    inherits(CustomDelegate, BaseDelegate);
 
-    var customDelegate = new CustomDelegate();
+    var customDelegate = new BaseDelegate();
+    customDelegate.setUser(user);
     chai.assert.equal(customDelegate.getUser(), user);
+
+    customDelegate.setUser(LivefyreUser);
+    customDelegate.destroy();
   });
 });

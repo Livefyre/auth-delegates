@@ -8,13 +8,21 @@ var user = require('auth-delegates/user');
  */
 function Delegate() {}
 
-Delegate.prototype.user = user;
+/** @private */
+Delegate.prototype._user = user;
 
 /**
  * @return {user}
  */
 Delegate.prototype.getUser = function() {
-  return this.user;
+  return this._user;
+};
+
+/**
+ * @param {Object}
+ */
+Delegate.prototype.setUser = function(user) {
+  this._user = user;
 };
 
 Delegate.prototype.restoreSession = function() {};
