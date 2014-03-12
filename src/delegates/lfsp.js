@@ -1,6 +1,8 @@
 /** @fileoverview Livefyre Simple Profiles authentication delegate */
 
 var base64 = require('base64'),
+    BaseDelegate = require('auth-delegates/delegates/base'),
+    inherits = require('inherits'),
     user = require('../user'),
 	useragent = require('../util/useragent');
 
@@ -17,6 +19,7 @@ var SP_EVENTS = {
  * @param {Object=} opt_config Configuration options
  * @param {string=} opt_serverUrl
  * @constructor
+ * @extends {BaseDelegate}
  */
 function LfspDelegate(articleId, siteId, opt_config, opt_serverUrl) {
     this.articleId = base64.btoa(articleId);
@@ -40,7 +43,10 @@ function LfspDelegate(articleId, siteId, opt_config, opt_serverUrl) {
     spObject.on(SP_EVENTS.LOGOUT_COMPLETE, function() {
         user.logout();
     }, this);
+
+    BaseDelegate.call(this);
 }
+inherits(LfspDelegate, BaseDelegate);
 
 /**
  *
@@ -101,8 +107,6 @@ LfspDelegate.prototype.viewProfile = function(author) {
 LfspDelegate.prototype.editProfile = function() {
 	this.profileApp.editProfile();
 };
-
-LfspDelegate.prototype.restoreSession = function() {};
 
 /**
  * Clean up any handlers, etc.

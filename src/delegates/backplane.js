@@ -3,7 +3,9 @@
  * versions of Backplane.
  */
 var base64 = require('base64'),
+    BaseDelegate = require('auth-delegates/delegates/base'),
     bind = require('auth-delegates/util/bind'),
+    inherits = require('inherits'),
     jsonp = require('auth-delegates/util/jsonp'),
     md5 = require('md5'),
 	storage = require('auth-delegates/util/storage'),
@@ -149,6 +151,7 @@ function setSubscriptionByVersion(backplane, handleMessage) {
  * @param {string} siteId
  * @param {string} serverUrl
  * @constructor
+ * @extends {BaseDelegate}
  */
 function BackplaneDelegate(articleId, siteId, serverUrl) {
 	if (!window.Backplane) {
@@ -172,7 +175,9 @@ function BackplaneDelegate(articleId, siteId, serverUrl) {
     bp(function() {
         initOnce || callback();
     });
+    BaseDelegate.call(this);
 }
+inherits(BackplaneDelegate, BaseDelegate);
 
 /**
  * Based on message type, takes a certain action.
@@ -227,11 +232,6 @@ BackplaneDelegate.prototype.logout = function() {
     poll();
 	user.logout();
 };
-
-BackplaneDelegate.prototype.login = function() {};
-BackplaneDelegate.prototype.viewProfile = function() {};
-BackplaneDelegate.prototype.editProfile = function() {};
-BackplaneDelegate.prototype.restoreSession = function() {};
 
 /**
  * Clean up any handlers, etc.

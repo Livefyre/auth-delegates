@@ -1,5 +1,7 @@
 var base64 = require('base64'),
+    BaseDelegate = require('auth-delegates/delegates/base'),
     bind = require('auth-delegates/util/bind'),
+    inherits = require('inherits'),
     jsonp = require('auth-delegates/util/jsonp'),
     storage = require('auth-delegates/util/storage'),
     user = require('auth-delegates/user'),
@@ -12,13 +14,16 @@ var base64 = require('base64'),
  * @param {string} siteId
  * @param {string} serverUrl
  * @constructor
+ * @extends {BaseDelegate}
  */
 function LivefyreDelegate(articleId, siteId, serverUrl) {
     this.articleId = base64.btoa(articleId);
     this.siteId = siteId;
     this.serverUrl = serverUrl;
     user.on('loginRequested', bind(this.fetchAuthData, this));
+    BaseDelegate.call(this);
 }
+inherits(LivefyreDelegate, BaseDelegate);
 
 /**
  * Fire login popup, and on success login the user.

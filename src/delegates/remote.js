@@ -4,7 +4,9 @@
  */
 
 var base64 = require('base64'),
+    BaseDelegate = require('auth-delegates/delegates/base'),
     bind = require('auth-delegates/util/bind'),
+    inherits = require('inherits'),
     storage = require('auth-delegates/util/storage'),
     user = require('auth-delegates/user'),
     AUTH_COOKIE_KEY = 'fyre-auth',
@@ -15,13 +17,16 @@ var base64 = require('base64'),
  * @param {string} siteId
  * @param {string=} serverUrl
  * @constructor
+ * @extends {BaseDelegate}
  */
 function RemoteAuthDelegate(articleId, siteId, serverUrl) {
   this.articleId = base64.btoa(articleId);
   this.siteId = siteId;
   this.serverUrl = serverUrl;
   user.on('loginRequested', bind(this.fetchAuthData, this));
+  BaseDelegate.call(this);
 }
+inherits(RemoteAuthDelegate, BaseDelegate);
 
 RemoteAuthDelegate.prototype.fetchAuthData = function() {
   this.restoreSession();
@@ -40,10 +45,6 @@ RemoteAuthDelegate.prototype.fetchAuthData = function() {
 RemoteAuthDelegate.prototype.logout = function() {
     user.logout();
 };
-
-// To be implemented by user
-RemoteAuthDelegate.prototype.login = function() {};
-RemoteAuthDelegate.prototype.editProfile = function() {};
 
 /**
  * @param {Object} author
