@@ -10,16 +10,14 @@
         //the closure below.
         define([], factory);
 
-    } else {
-        //Browser globals case. Just assign the
-        //result to a property on the global.
-        var f = factory();
-        root.Livefyre = root.Livefyre || {};
- 
-        for (var module in f) {
-            if (f.hasOwnProperty(module)) {
-                root.Livefyre[module] = f[module];
-            }
+    }
+    // Browser globals case. Just assign the result to a property on the global.
+    var f = factory();
+    root.Livefyre = root.Livefyre || {};
+
+    for (var module in f) {
+        if (f.hasOwnProperty(module)) {
+            root.Livefyre[module] = f[module];
         }
     }
 }(this, function () {
