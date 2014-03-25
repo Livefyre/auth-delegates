@@ -171,6 +171,10 @@ LivefyreUser.prototype.isMod = function(articleId) {
 LivefyreUser.prototype.remoteLogin = function(opts) {
     // TODO(rrp): uri param helper
     var baseUrl = (opts.serverUrl || 'http://livefyre.com');
+    if (!/admin/.test(baseUrl) && !(/livefyre|localhost/.test(baseUrl))) {
+        baseUrl = 'admin.' + baseUrl;
+    }
+
     if (!/http/.test(baseUrl)) {
         baseUrl = 'http://' + baseUrl;
     }
