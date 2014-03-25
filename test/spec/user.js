@@ -141,6 +141,19 @@ describe('auth-delegates/user', function() {
             });
         });
 
+        it('Can use a url without http for remote fetching', function(done) {
+            user.remoteLogin({
+                    articleId: '123',
+                    siteId: '456',
+                    serverUrl: 'localhost:8090',
+                    callback: function() {
+                        chai.assert(user.get('id') === '_u696@livefyre.com');
+                        chai.assert(user.isMod('123'));
+                        done();
+                    }
+            });
+        });
+
         it('Sets and clear storage', function(done) {
             user.remoteLogin({
                 articleId: '123',
