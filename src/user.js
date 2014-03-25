@@ -170,8 +170,13 @@ LivefyreUser.prototype.isMod = function(articleId) {
  */
 LivefyreUser.prototype.remoteLogin = function(opts) {
     // TODO(rrp): uri param helper
+    var baseUrl = (opts.serverUrl || 'http://livefyre.com');
+    if (!/http/.test(baseUrl)) {
+        baseUrl = 'http://' + baseUrl;
+    }
+
     var queryParams = 'articleId=' + encodeURIComponent(opts.articleId) + '&siteId=' + opts.siteId,
-        url = (opts.serverUrl || 'http://livefyre.com') + '/api/v3.0/auth/?' + queryParams,
+        url = baseUrl + '/api/v3.0/auth/?' + queryParams,
         self = this,
         token = this.get('token'),
         bpChannel = this.get('bpChannel');
