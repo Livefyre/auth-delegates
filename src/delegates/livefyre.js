@@ -107,7 +107,7 @@ LivefyreDelegate.prototype.viewProfile = function(author) {
 };
 
 LivefyreDelegate.prototype.editProfile = function() {
-    window.open(this._serverUrl + '/profile/edit/info/', '_blank');
+    window.open(this.serverUrl + '/profile/edit/info/', '_blank');
 };
 
 LivefyreDelegate.prototype.restoreSession = function() {
