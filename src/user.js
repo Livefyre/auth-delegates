@@ -211,4 +211,6 @@ LivefyreUser.prototype.remoteLogin = function(opts) {
 /**
  * Set up singleton user object.
  */
-module.exports = new LivefyreUser();
+window.Livefyre = window.Livefyre || {};
+window.Livefyre.user = window.Livefyre.user || new LivefyreUser();
+module.exports = window.Livefyre.user;
