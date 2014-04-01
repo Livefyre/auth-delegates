@@ -175,8 +175,9 @@ LivefyreUser.prototype.remoteLogin = function(opts) {
         baseUrl = 'admin.' + baseUrl;
     }
 
-    if (!/http/.test(baseUrl)) {
-        baseUrl = 'http://' + baseUrl;
+    // If there is no protocol on the url...
+    if (!/^http/.test(baseUrl)) {
+        baseUrl = window.location.protocol + '//' + baseUrl;
     }
 
     var queryParams = 'articleId=' + encodeURIComponent(opts.articleId) + '&siteId=' + opts.siteId,
