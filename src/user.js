@@ -10,6 +10,7 @@ var EventEmitter = require('event-emitter'),
     inherits = require('inherits'),
     jsonp = require('auth-delegates/util/jsonp'),
     storage = require('auth-delegates/util/storage'),
+    urlUtil = require('auth-delegates/util/url'),
     AUTH_COOKIE_KEY = 'fyre-auth',
     AUTH_CREDS = 'fyre-authentication-creds';
 
@@ -169,16 +170,7 @@ LivefyreUser.prototype.isMod = function(articleId) {
  * @param {function()=} opts.callback
  */
 LivefyreUser.prototype.remoteLogin = function(opts) {
-    // TODO(rrp): uri param helper
-    var baseUrl = (opts.serverUrl || 'http://livefyre.com');
-    if (!/admin/.test(baseUrl) && !(/livefyre|localhost/.test(baseUrl))) {
-        baseUrl = 'admin.' + baseUrl;
-    }
-
-    if (!/http/.test(baseUrl)) {
-        baseUrl = 'http://' + baseUrl;
-    }
-
+    var baseUrl = urlUtil.getBaseUrl(opts.serverUrl || 'http://livefyre.com');
     var queryParams = 'articleId=' + encodeURIComponent(opts.articleId) + '&siteId=' + opts.siteId,
         url = baseUrl + '/api/v3.0/auth/?' + queryParams,
         self = this,
