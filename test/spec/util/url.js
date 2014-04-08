@@ -3,9 +3,9 @@ var urlUtil = require('auth-delegates/util/url');
 
 describe('auth-delegates/util/url', function() {
   describe('getBaseUrl', function () {
-    it('does nothing with livefyre.com urls', function () {
+    it('should add admin to livefyre urls', function () {
       var url = urlUtil.getBaseUrl('livefyre.com');
-      chai.expect(url).to.equal('http://livefyre.com');
+      chai.expect(url).to.equal('http://admin.livefyre.com');
     });
 
     it('does nothing with localhost urls', function () {
