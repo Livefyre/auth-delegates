@@ -15,6 +15,8 @@ util.getBaseUrl = function (serverUrl, opt_protocol) {
   // custom network format for domains.
   if (!/livefyre|localhost|fyre$/.test(domain)) {
     domain = domain.split('.')[0] + '.admin.fyre.co';
+  } else if (/livefyre/.test(domain)) {
+    domain = 'admin.' + domain;
   }
   return [opt_protocol || window.location.protocol, '//', domain].join('');
 };
