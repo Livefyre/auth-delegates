@@ -20,5 +20,5 @@
     startFile: 'tools/wrap-start.frag',
     endFile: 'tools/wrap-end.frag'
   },
-  generateSourceMaps: false
+  generateSourceMaps: true
 })
