@@ -6,6 +6,7 @@ var base64 = require('base64'),
     storage = require('auth-delegates/util/storage'),
     user = require('auth-delegates/user'),
     userAgent = navigator.userAgent,
+    urlUtil = require('auth-delegates/util/url'),
     AUTH_COOKIE_KEY = 'fyre-auth',
     IS_OPERA = userAgent.indexOf('Opera') > -1;
 
@@ -19,7 +20,7 @@ var base64 = require('base64'),
 function LivefyreDelegate(articleId, siteId, serverUrl) {
     this.articleId = base64.btoa(articleId);
     this.siteId = siteId;
-    this.serverUrl = serverUrl;
+    this.serverUrl = urlUtil.getBaseUrl(serverUrl || '');
     user.on('loginRequested', bind(this.fetchAuthData, this));
     BaseDelegate.call(this);
 }
