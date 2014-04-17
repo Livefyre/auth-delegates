@@ -5,7 +5,7 @@ describe('auth-delegates/util/url', function() {
   describe('getBaseUrl', function () {
     it('should add admin to livefyre urls', function () {
       var url = urlUtil.getBaseUrl('livefyre.com');
-      chai.expect(url).to.equal('http://admin.livefyre.com');
+      chai.expect(url).to.equal('http://www.livefyre.com');
     });
 
     it('does nothing with localhost urls', function () {
