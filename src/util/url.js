@@ -10,13 +10,13 @@ var util = {};
  * @return {string} The base authentication url.
  */
 util.getBaseUrl = function (serverUrl, opt_protocol) {
-  var domain = serverUrl.replace(/^https?:\/\//, '').replace(/^admin\./, '');
+  var domain = serverUrl.replace(/^https?:\/\//, '').replace(/^(admin|www)\./, '');
   // If this is not a livefyre or local network, then convert to the new
   // custom network format for domains.
   if (!/livefyre|localhost|fyre$/.test(domain)) {
     domain = domain.split('.')[0] + '.admin.fyre.co';
   } else if (/livefyre/.test(domain)) {
-    domain = 'admin.' + domain;
+    domain = 'www.' + domain;
   }
   return [opt_protocol || window.location.protocol, '//', domain].join('');
 };
