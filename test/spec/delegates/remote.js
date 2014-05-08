@@ -4,7 +4,13 @@ var storage = require('auth-delegates/util/storage');
 var user = require('auth-delegates/user');
 var sinon = require('sinon');
 
+
+
 describe('remote delegate', function() {
+    beforeEach(function() {
+        user.logout();
+    });
+
     describe('maintains the required interface', function() {
         it('has viewProfile and editProfile handlers', function() {
             chai.assert.isFunction(RemoteDelegate.prototype.viewProfile);
