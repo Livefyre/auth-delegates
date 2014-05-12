@@ -35,7 +35,6 @@ describe('livefyre.com delegate', function() {
     it('restores session', function(done) {
       var delegate = new LivefyreDelegate('122', '456', 'http://localhost:8090');
       function handleLogin() {
-        user.removeListener('login', handleLogin);
         chai.assert(user.isAuthenticated(), 'user should be authenticated');
         // Clear data to defaults, and restore from storage.
         user.set({
@@ -51,9 +50,12 @@ describe('livefyre.com delegate', function() {
         done();
       }
 
-      user.on('login', handleLogin);
-
-      user.loadSession(sampleProfile, '122');
+      user.remoteLogin({
+        articleId: '122',
+        siteId: '456',
+        serverUrl: 'http://localhost:8090',
+        callback: handleLogin
+      });
     });
   });
 });

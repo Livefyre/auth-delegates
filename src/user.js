@@ -124,6 +124,7 @@ LivefyreUser.prototype.loadSession = function(data, articleId) {
         collectionId = data['collection_id'];
 
     profile['token'] = tokenObj['value'];
+    profile['tags'] = data['tags'] || [];
 
     for (var i = 0; i < authors.length; i++) {
         keys.push(authors[i]['key']);
