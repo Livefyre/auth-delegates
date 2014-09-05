@@ -9,8 +9,8 @@ var base64 = require('base64'),
 /** @enum {string} */
 var SP_EVENTS = {
     LOGIN_COMPLETE: 'auth_login_complete',
-    LOGOUT_COMPLETE: 'auth_logout_complete',
-    ENGAGE_AUTH_CLOSE: 'engage_auth_close'
+    LOGIN_INCOMPLETE: 'auth_login_incomplete',
+    LOGOUT_COMPLETE: 'auth_logout_complete'
 };
 
 /**
@@ -55,15 +55,15 @@ LfspDelegate.prototype.login = function() {
     function success(data) {
         user.login(data['token']);
         this.spObject.off(SP_EVENTS.LOGIN_COMPLETE, success);
-        this.spObject.off(SP_EVENTS.ENGAGE_AUTH_CLOSE, failure);
+        this.spObject.off(SP_EVENTS.LOGIN_INCOMPLETE, failure);
     }
     function failure() {
-        this.spObject.off(SP_EVENTS.ENGAGE_AUTH_CLOSE, failure);
+        this.spObject.off(SP_EVENTS.LOGIN_INCOMPLETE, failure);
         this.spObject.off(SP_EVENTS.LOGIN_COMPLETE, success);
     }
     this.engageApp.signIn();
     this.spObject.on(SP_EVENTS.LOGIN_COMPLETE, success, this);
-    this.spObject.on(SP_EVENTS.ENGAGE_AUTH_CLOSE, failure, this);
+    this.spObject.on(SP_EVENTS.LOGIN_INCOMPLETE, failure, this);
 };
 
 /**
